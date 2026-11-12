@@ -13,6 +13,8 @@ import type { Db } from './db/client';
 import { registerSessionAuth } from './plugins/session-auth';
 import { registerAuthRoutes } from './routes/auth';
 import { registerDashboardRoutes } from './routes/dashboard';
+import { registerCategoryRoutes } from './routes/categories';
+import { registerTagRoutes } from './routes/tags';
 
 export interface AppDeps {
   db: Db;
@@ -60,6 +62,8 @@ export async function buildApp({ db, sqlite, config }: AppDeps): Promise<Fastify
 
   await registerAuthRoutes(app, { db, config });
   await registerDashboardRoutes(app, { db });
+  await registerCategoryRoutes(app, { db });
+  await registerTagRoutes(app, { db });
 
   app.setNotFoundHandler((request, reply) => {
     return reply.code(404).view('error.ejs', {
