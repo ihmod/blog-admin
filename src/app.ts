@@ -15,6 +15,7 @@ import { registerAuthRoutes } from './routes/auth';
 import { registerDashboardRoutes } from './routes/dashboard';
 import { registerCategoryRoutes } from './routes/categories';
 import { registerTagRoutes } from './routes/tags';
+import { registerPostRoutes } from './routes/posts';
 
 export interface AppDeps {
   db: Db;
@@ -64,6 +65,7 @@ export async function buildApp({ db, sqlite, config }: AppDeps): Promise<Fastify
   await registerDashboardRoutes(app, { db });
   await registerCategoryRoutes(app, { db });
   await registerTagRoutes(app, { db });
+  await registerPostRoutes(app, { db });
 
   app.setNotFoundHandler((request, reply) => {
     return reply.code(404).view('error.ejs', {

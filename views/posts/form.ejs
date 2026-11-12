@@ -1,0 +1,51 @@
+<%- include('../partials/header', { title: isNew ? '新建文章' : '编辑文章', user, csrfToken }) %>
+<%- include('../partials/notice', { notice: undefined, error }) %>
+<h1><%= isNew ? '新建文章' : '编辑文章' %></h1>
+<% if (!isNew && post.abbrlink) { %>
+  <p class="muted">永久链接：/posts/<%= post.abbrlink %>.html</p>
+<% } %>
+<form method="post" action="<%= isNew ? '/posts' : '/posts/' + post.id %>">
+  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+  <div class="form-grid">
+    <label class="full">标题
+      <input name="title" value="<%= post.title %>" required>
+    </label>
+    <label>Slug（留空自动生成）
+      <input name="slug" value="<%= post.slug ?? '' %>">
+    </label>
+    <label>分类
+      <select name="category_id">
+        <option value="">未分类</option>
+        <% for (const category of categories) { %>
+          <option value="<%= category.id %>" <%= post.categoryId === category.id ? 'selected' : '' %>><%= category.name %></option>
+        <% } %>
+      </select>
+    </label>
+    <label>标签（逗号分隔）
+      <input name="tags" value="<%= post.tagsText ?? post.tags.join(', ') %>">
+    </label>
+    <label>日期（YYYY-MM-DD HH:mm:ss）
+      <input name="post_date" value="<%= post.postDate ?? '' %>">
+    </label>
+    <label>状态
+      <select name="status">
+        <option value="draft" <%= post.status === 'draft' ? 'selected' : '' %>>草稿</option>
+        <option value="published" <%= post.status === 'published' ? 'selected' : '' %>>已发布</option>
+      </select>
+    </label>
+    <label>顶部图（false 或 URL）
+      <input name="top_img" value="<%= post.topImg ?? 'false' %>">
+    </label>
+    <label class="full">摘要
+      <input name="description" value="<%= post.description ?? '' %>">
+    </label>
+    <label class="full">正文（Markdown）
+      <textarea name="content_md"><%= post.contentMd %></textarea>
+    </label>
+  </div>
+  <div class="toolbar">
+    <button type="submit">保存</button>
+    <a href="/posts">返回列表</a>
+  </div>
+</form>
+<%- include('../partials/footer') %>

@@ -1,0 +1,81 @@
+<%- include('../partials/header', { title: '文章', user, csrfToken }) %>
+<%- include('../partials/notice', { notice, error }) %>
+<div class="toolbar">
+  <div class="grow">
+    <h1>文章</h1>
+  </div>
+  <a class="button" href="/posts/new">新建文章</a>
+</div>
+<form method="get" action="/posts" class="toolbar">
+  <label>状态
+    <select name="status">
+      <option value="all" <%= filters.status === 'all' ? 'selected' : '' %>>全部</option>
+      <option value="draft" <%= filters.status === 'draft' ? 'selected' : '' %>>草稿</option>
+      <option value="published" <%= filters.status === 'published' ? 'selected' : '' %>>已发布</option>
+      <option value="trash" <%= filters.status === 'trash' ? 'selected' : '' %>>回收站</option>
+    </select>
+  </label>
+  <label>分类
+    <select name="category">
+      <option value="">全部分类</option>
+      <% for (const category of categories) { %>
+        <option value="<%= category.id %>" <%= filters.categoryId === category.id ? 'selected' : '' %>><%= category.name %></option>
+      <% } %>
+    </select>
+  </label>
+  <label class="grow">搜索
+    <input name="q" value="<%= filters.q ?? '' %>" placeholder="按标题搜索">
+  </label>
+  <button type="submit">筛选</button>
+</form>
+<table class="table">
+  <thead>
+    <tr><th>标题</th><th>分类</th><th>标签</th><th>状态</th><th>更新时间</th><th>操作</th></tr>
+  </thead>
+  <tbody>
+    <% for (const post of items) { %>
+      <tr>
+        <td><a href="/posts/<%= post.id %>"><%= post.title %></a></td>
+        <td><%= post.categoryName %></td>
+        <td><%= post.tags.join('、') %></td>
+        <td>
+          <% if (post.deletedAt) { %>
+            <span class="badge trash">回收站</span>
+          <% } else if (post.status === 'published') { %>
+            <span class="badge">已发布</span>
+          <% } else { %>
+            <span class="badge draft">草稿</span>
+          <% } %>
+        </td>
+        <td><%= post.updatedAt %></td>
+        <td class="actions">
+          <a href="/posts/<%= post.id %>">编辑</a>
+          <% if (post.deletedAt) { %>
+            <form method="post" action="/posts/<%= post.id %>/restore"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><button class="link-button" type="submit">恢复</button></form>
+            <form method="post" action="/posts/<%= post.id %>/purge"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><button class="link-button danger-text" type="submit">彻底删除</button></form>
+          <% } else { %>
+            <% if (post.status === 'published') { %>
+              <form method="post" action="/posts/<%= post.id %>/unpublish"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><button class="link-button" type="submit">取消发布</button></form>
+            <% } else { %>
+              <form method="post" action="/posts/<%= post.id %>/publish"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><button class="link-button" type="submit">发布</button></form>
+            <% } %>
+            <form method="post" action="/posts/<%= post.id %>/delete"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><button class="link-button danger-text" type="submit">删除</button></form>
+          <% } %>
+        </td>
+      </tr>
+    <% } %>
+    <% if (items.length === 0) { %>
+      <tr><td colspan="6" class="muted">没有文章。</td></tr>
+    <% } %>
+  </tbody>
+</table>
+<div class="pagination">
+  <span>共 <%= total %> 篇，第 <%= page %> / <%= totalPages %> 页</span>
+  <% if (page > 1) { %>
+    <a href="/posts?page=<%= page - 1 %>&status=<%= filters.status %>&category=<%= filters.categoryId ?? '' %>&q=<%= encodeURIComponent(filters.q ?? '') %>">上一页</a>
+  <% } %>
+  <% if (page < totalPages) { %>
+    <a href="/posts?page=<%= page + 1 %>&status=<%= filters.status %>&category=<%= filters.categoryId ?? '' %>&q=<%= encodeURIComponent(filters.q ?? '') %>">下一页</a>
+  <% } %>
+</div>
+<%- include('../partials/footer') %>
