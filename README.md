@@ -47,6 +47,36 @@ npm start
 - Slugs and `abbrlink` values are generated automatically; existing values are preserved.
 - Posts store a stable `source_path` under the post's category; changing category/slug moves it.
 
+## Import existing Hexo posts
+
+The importer reads Markdown files recursively and matches existing posts by
+`source_path`. It never deletes posts. Hidden directories such as `.obsidian/`
+are skipped.
+
+Dry run (writes are rolled back):
+
+```bash
+DATABASE_PATH=./data/admin.db npm run import -- /path/to/source/_posts --dry-run
+```
+
+Real import:
+
+```bash
+DATABASE_PATH=./data/admin.db npm run import -- /path/to/source/_posts
+```
+
+Re-import and overwrite managed fields (title, body, date, category, tags,
+description, top_img) while preserving IDs, `abbrlink`, slug, `source_path`,
+status, and `published_at`:
+
+```bash
+DATABASE_PATH=./data/admin.db npm run import -- /path/to/source/_posts --update
+```
+
+Date handling: `frontmatter.date` wins; `YYMMDD.md` diary filenames are parsed;
+otherwise the file mtime is used and reported as an issue. Review the reported
+issues in the admin before publishing.
+
 ## Layout
 
 - `src/` TypeScript source
