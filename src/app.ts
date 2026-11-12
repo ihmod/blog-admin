@@ -11,6 +11,8 @@ import type Database from 'better-sqlite3';
 import type { Config } from './config';
 import type { Db } from './db/client';
 import { registerSessionAuth } from './plugins/session-auth';
+import { registerAuthRoutes } from './routes/auth';
+import { registerDashboardRoutes } from './routes/dashboard';
 
 export interface AppDeps {
   db: Db;
@@ -56,10 +58,8 @@ export async function buildApp({ db, sqlite, config }: AppDeps): Promise<Fastify
     return { ok: true };
   });
 
-  // Temporary stubs so the session/CSRF hooks can be tested in this task.
-  // Task 9 replaces these with the real login/logout/dashboard routes.
-  app.get('/', async () => ({ ok: true }));
-  app.post('/login', async () => ({ ok: true }));
+  await registerAuthRoutes(app, { db, config });
+  await registerDashboardRoutes(app, { db });
 
   app.setNotFoundHandler((request, reply) => {
     return reply.code(404).view('error.ejs', {

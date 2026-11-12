@@ -1,0 +1,18 @@
+<%- include('partials/header', { title: '登录', user: null, csrfToken }) %>
+<section class="card narrow">
+  <h1>登录</h1>
+  <% if (error) { %>
+    <p class="error"><%= error %></p>
+  <% } %>
+  <form method="post" action="/login">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    <label>用户名
+      <input name="username" autocomplete="username" required autofocus>
+    </label>
+    <label>密码
+      <input name="password" type="password" autocomplete="current-password" required>
+    </label>
+    <button type="submit">登录</button>
+  </form>
+</section>
+<%- include('partials/footer') %>

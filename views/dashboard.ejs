@@ -1,0 +1,11 @@
+<%- include('partials/header', { title: '仪表盘', user, csrfToken }) %>
+<h1>仪表盘</h1>
+<div class="grid">
+  <div class="stat"><span class="num"><%= counts.total %></span><span>文章</span></div>
+  <div class="stat"><span class="num"><%= counts.published %></span><span>已发布</span></div>
+  <div class="stat"><span class="num"><%= counts.drafts %></span><span>草稿</span></div>
+  <div class="stat"><span class="num"><%= counts.categories %></span><span>分类</span></div>
+  <div class="stat"><span class="num"><%= counts.tags %></span><span>标签</span></div>
+</div>
+<p class="muted">内容管理将在下一步接入。</p>
+<%- include('partials/footer') %>

@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title><%= typeof title !== 'undefined' && title ? title + ' | ' : '' %>iHMOD Admin</title>
+  <link rel="stylesheet" href="/static/admin.css">
+</head>
+<body>
+<% if (typeof user !== 'undefined' && user) { %>
+<nav class="nav">
+  <a class="brand" href="/">iHMOD Admin</a>
+  <div class="nav-links">
+    <a href="/">仪表盘</a>
+    <span class="who"><%= user.username %></span>
+    <form method="post" action="/logout" class="inline">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <button class="link-button" type="submit">退出</button>
+    </form>
+  </div>
+</nav>
+<% } %>
+<main class="container">
