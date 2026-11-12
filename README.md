@@ -38,6 +38,15 @@ npm run build
 npm start
 ```
 
+## Content management
+
+- `/posts` — list, filter, search; create/edit with a Markdown textarea.
+- `/categories` — create, rename, delete (blocked while posts reference it).
+- `/tags` — create, rename, delete (blocked while posts reference it).
+- Post states: draft, published, trash (soft delete with restore/purge).
+- Slugs and `abbrlink` values are generated automatically; existing values are preserved.
+- Posts store a stable `source_path` under the post's category; changing category/slug moves it.
+
 ## Layout
 
 - `src/` TypeScript source
