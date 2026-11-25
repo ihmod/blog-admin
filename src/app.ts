@@ -40,8 +40,11 @@ export async function buildApp({ db, sqlite, config }: AppDeps): Promise<Fastify
     contentSecurityPolicy: {
       directives: {
         defaultSrc: ["'self'"],
-        styleSrc: ["'self'"],
-        imgSrc: ["'self'", 'data:', 'https:'],
+        styleSrc: ["'self'", "'unsafe-inline'"],
+        imgSrc: ["'self'", 'data:', 'blob:', 'https:'],
+        fontSrc: ["'self'", 'data:'],
+        connectSrc: ["'self'"],
+        workerSrc: ["'self'", 'blob:'],
         scriptSrc: ["'self'"],
         frameAncestors: ["'none'"],
         baseUri: ["'none'"],

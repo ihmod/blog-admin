@@ -1,10 +1,10 @@
-<%- include('../partials/header', { title: isNew ? '新建文章' : '编辑文章', user, csrfToken }) %>
-<%- include('../partials/notice', { notice: undefined, error }) %>
+<%- include('../partials/header', { title: isNew ? '新建文章' : '编辑文章', user, csrfToken, vditor: true }) %>
+<%- include('../partials/notice', { notice: undefined, error: typeof error !== 'undefined' ? error : undefined }) %>
 <h1><%= isNew ? '新建文章' : '编辑文章' %></h1>
 <% if (!isNew && post.abbrlink) { %>
   <p class="muted">永久链接：/posts/<%= post.abbrlink %>.html</p>
 <% } %>
-<form method="post" action="<%= isNew ? '/posts' : '/posts/' + post.id %>">
+<form method="post" action="<%= isNew ? '/posts' : '/posts/' + post.id %>" id="post-form">
   <input type="hidden" name="_csrf" value="<%= csrfToken %>">
   <div class="form-grid">
     <label class="full">标题
@@ -40,7 +40,9 @@
       <input name="description" value="<%= post.description ?? '' %>">
     </label>
     <label class="full">正文（Markdown）
-      <textarea name="content_md"><%= post.contentMd %></textarea>
+      <input type="hidden" name="content_md" id="content_md" value="<%= post.contentMd %>">
+      <div id="vditor" data-csrf="<%= csrfToken %>" data-post-id="<%= post.id ?? '' %>"></div>
+      <span id="autosave-status" class="muted"></span>
     </label>
   </div>
   <div class="toolbar">
@@ -48,4 +50,6 @@
     <a href="/posts">返回列表</a>
   </div>
 </form>
+<script src="/static/vditor/index.min.js"></script>
+<script src="/static/editor.js"></script>
 <%- include('../partials/footer') %>
