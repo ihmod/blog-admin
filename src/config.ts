@@ -10,6 +10,7 @@ const schema = z.object({
   HOST: z.string().default('127.0.0.1'),
   PORT: z.coerce.number().int().positive().default(8080),
   DATABASE_PATH: z.string().default('./data/admin.db'),
+  UPLOADS_DIR: z.string().default('./data/uploads'),
   SESSION_SECRET: z.string().min(32, 'SESSION_SECRET must be at least 32 characters'),
   ADMIN_USERNAME: z.string().min(1).default('admin'),
   ADMIN_PASSWORD: z.string().min(12).optional(),

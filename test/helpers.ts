@@ -13,6 +13,7 @@ export interface TestApp {
   db: ReturnType<typeof createDb>['db'];
   sqlite: ReturnType<typeof createDb>['sqlite'];
   dir: string;
+  uploadsDir: string;
   cleanup: () => Promise<void>;
 }
 
@@ -35,6 +36,7 @@ export function extractCsrf(html: string): string {
 export async function makeTestApp(overrides: Record<string, string> = {}): Promise<TestApp> {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'ihmod-admin-'));
   const dbPath = path.join(dir, 'test.db');
+  const uploadsDir = path.join(dir, 'uploads');
   const { db, sqlite } = createDb(dbPath);
   applyMigrations(sqlite, path.resolve(process.cwd(), 'migrations'));
   const config = loadConfig({
@@ -43,6 +45,7 @@ export async function makeTestApp(overrides: Record<string, string> = {}): Promi
     ADMIN_USERNAME: 'admin',
     ADMIN_PASSWORD: 'test-password-123',
     DATABASE_PATH: dbPath,
+    UPLOADS_DIR: uploadsDir,
     LOGIN_RATE_LIMIT_MAX: '100',
     COOKIE_SECURE: 'false',
     ...overrides,
@@ -54,6 +57,7 @@ export async function makeTestApp(overrides: Record<string, string> = {}): Promi
     db,
     sqlite,
     dir,
+    uploadsDir,
     cleanup: async () => {
       await app.close();
       sqlite.close();

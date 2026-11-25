@@ -23,6 +23,7 @@ async function makeApp(overrides: Record<string, string> = {}) {
     ADMIN_USERNAME: 'admin',
     ADMIN_PASSWORD: 'test-password-123',
     DATABASE_PATH: path.join(dir, 'test.db'),
+    UPLOADS_DIR: path.join(dir, 'uploads'),
     LOGIN_RATE_LIMIT_MAX: '100',
     COOKIE_SECURE: 'false',
     ...overrides,
