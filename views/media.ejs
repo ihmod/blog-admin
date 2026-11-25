@@ -1,0 +1,28 @@
+<%- include('partials/header', { title: '媒体', user, csrfToken }) %>
+<%- include('partials/notice', { notice, error }) %>
+<h1>媒体</h1>
+<form id="media-upload" data-csrf="<%= csrfToken %>" class="toolbar">
+  <label class="grow">上传图片
+    <input type="file" name="file" accept="image/png,image/jpeg,image/gif,image/webp" required>
+  </label>
+  <button type="submit">上传</button>
+  <span id="media-status" class="muted"></span>
+</form>
+<div class="media-grid">
+  <% for (const item of items) { %>
+    <figure class="media-item">
+      <img src="/img/uploads/<%= item.storedName %>" alt="<%= item.originalName %>">
+      <figcaption>
+        <span class="muted"><%= item.originalName %></span>
+        <input readonly value="/img/uploads/<%= item.storedName %>">
+        <form method="post" action="/media/<%= item.id %>/delete">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+          <button class="danger" type="submit">删除</button>
+        </form>
+      </figcaption>
+    </figure>
+  <% } %>
+  <% if (items.length === 0) { %><p class="muted">还没有图片。</p><% } %>
+</div>
+<script src="/static/media.js"></script>
+<%- include('partials/footer') %>

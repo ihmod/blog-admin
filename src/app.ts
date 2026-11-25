@@ -1,7 +1,9 @@
+import fs from 'node:fs';
 import path from 'node:path';
 import Fastify, { type FastifyError, type FastifyInstance } from 'fastify';
 import cookie from '@fastify/cookie';
 import formbody from '@fastify/formbody';
+import multipart from '@fastify/multipart';
 import helmet from '@fastify/helmet';
 import rateLimit from '@fastify/rate-limit';
 import fastifyStatic from '@fastify/static';
@@ -16,6 +18,7 @@ import { registerDashboardRoutes } from './routes/dashboard';
 import { registerCategoryRoutes } from './routes/categories';
 import { registerTagRoutes } from './routes/tags';
 import { registerPostRoutes } from './routes/posts';
+import { registerMediaRoutes } from './routes/media';
 
 export interface AppDeps {
   db: Db;
@@ -30,6 +33,9 @@ export async function buildApp({ db, sqlite, config }: AppDeps): Promise<Fastify
 
   await app.register(cookie, { secret: config.SESSION_SECRET });
   await app.register(formbody);
+  await app.register(multipart, {
+    limits: { fileSize: 10 * 1024 * 1024, files: 1 },
+  });
   await app.register(helmet, {
     contentSecurityPolicy: {
       directives: {
@@ -45,16 +51,29 @@ export async function buildApp({ db, sqlite, config }: AppDeps): Promise<Fastify
     },
   });
   await app.register(rateLimit, { global: false });
+
+  // Registered before the static routes so /img/uploads/ requires a session.
+  registerSessionAuth(app, { db, config });
+
+  fs.mkdirSync(config.UPLOADS_DIR, { recursive: true });
   await app.register(fastifyStatic, {
     root: path.resolve(__dirname, '../public'),
     prefix: '/static/',
+  });
+  await app.register(fastifyStatic, {
+    root: path.resolve(__dirname, '../node_modules/vditor/dist'),
+    prefix: '/static/vditor/',
+    decorateReply: false,
+  });
+  await app.register(fastifyStatic, {
+    root: config.UPLOADS_DIR,
+    prefix: '/img/uploads/',
+    decorateReply: false,
   });
   await app.register(view, {
     engine: { ejs },
     root: path.resolve(__dirname, '../views'),
   });
-
-  registerSessionAuth(app, { db, config });
 
   app.get('/healthz', async () => {
     sqlite.prepare('SELECT 1').get();
@@ -66,6 +85,7 @@ export async function buildApp({ db, sqlite, config }: AppDeps): Promise<Fastify
   await registerCategoryRoutes(app, { db });
   await registerTagRoutes(app, { db });
   await registerPostRoutes(app, { db });
+  await registerMediaRoutes(app, { db, uploadsDir: config.UPLOADS_DIR });
 
   app.setNotFoundHandler((request, reply) => {
     return reply.code(404).view('error.ejs', {
