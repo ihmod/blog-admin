@@ -38,6 +38,12 @@ describe('media routes', () => {
     expect(res.headers.location).toBe('/login');
   });
 
+  it('serves the media upload script from /static', async () => {
+    current = await makeTestApp();
+    const res = await current.app.inject({ method: 'GET', url: '/static/media.js' });
+    expect(res.statusCode).toBe(200);
+  });
+
   it('uploads, serves, and deletes an image', async () => {
     const { app, db, uploadsDir, cookie, csrf } = await setup();
     const boundary = '----ihmodtest';
