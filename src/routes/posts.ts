@@ -4,6 +4,7 @@ import { listCategories } from '../lib/categories';
 import {
   PostNotFoundError,
   PostValidationError,
+  autosavePost,
   createPost,
   getPost,
   listPosts,
@@ -140,6 +141,23 @@ export async function registerPostRoutes(
       throw error;
     }
     return reply.redirect('/posts?notice=created');
+  });
+
+  app.post('/api/posts/:id/autosave', async (request, reply) => {
+    const { id } = request.params as { id: string };
+    const body = request.body as { title?: string; content_md?: string } | undefined;
+    try {
+      const result = autosavePost(db, id, {
+        title: body?.title ?? '',
+        contentMd: body?.content_md ?? '',
+      });
+      return reply.send(result);
+    } catch (error) {
+      if (error instanceof PostNotFoundError) {
+        return reply.code(404).send({ error: 'not-found' });
+      }
+      throw error;
+    }
   });
 
   app.get('/posts/:id', async (request, reply) => {

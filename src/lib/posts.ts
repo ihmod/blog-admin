@@ -287,6 +287,50 @@ export function listPosts(db: Db, filters: PostListFilters) {
   };
 }
 
+export interface AutosaveInput {
+  title: string;
+  contentMd: string;
+}
+
+export interface AutosaveResult {
+  saved: boolean;
+  updatedAt: string;
+}
+
+export function autosavePost(db: Db, id: string, input: AutosaveInput): AutosaveResult {
+  const post = db.select().from(posts).where(eq(posts.id, id)).get();
+  if (!post) throw new PostNotFoundError('文章不存在');
+
+  const title = input.title.trim() || post.title;
+  if (post.title === title && post.contentMd === input.contentMd) {
+    return { saved: false, updatedAt: post.updatedAt };
+  }
+
+  const tagRows = db
+    .select({ name: tags.name })
+    .from(postTags)
+    .innerJoin(tags, eq(postTags.tagId, tags.id))
+    .where(eq(postTags.postId, id))
+    .all();
+  const now = nowStamp();
+  const hash = contentHash({
+    title,
+    contentMd: input.contentMd,
+    categoryId: post.categoryId,
+    tags: tagRows.map((row) => row.name),
+    description: post.description,
+    topImg: post.topImg,
+    postDate: post.postDate,
+  });
+
+  db.update(posts)
+    .set({ title, contentMd: input.contentMd, updatedAt: now, contentHash: hash })
+    .where(eq(posts.id, id))
+    .run();
+
+  return { saved: true, updatedAt: now };
+}
+
 export function softDeletePost(db: Db, id: string): void {
   const now = nowStamp();
   const result = db
