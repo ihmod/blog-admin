@@ -4,6 +4,7 @@ import { loadConfig } from './config';
 import { createDb } from './db/client';
 import { applyMigrations } from './db/migrate';
 import { seedAdmin } from './auth/seed';
+import { recoverPublishState } from './services/publisher';
 import { buildApp } from './app';
 
 async function main(): Promise<void> {
@@ -12,6 +13,7 @@ async function main(): Promise<void> {
   applyMigrations(sqlite, path.resolve(__dirname, '../migrations'));
   const seed = await seedAdmin(db, config);
   if (seed.created) console.log(`created admin user: ${config.ADMIN_USERNAME}`);
+  recoverPublishState(db);
 
   const app = await buildApp({ db, sqlite, config });
   await app.listen({ host: config.HOST, port: config.PORT });

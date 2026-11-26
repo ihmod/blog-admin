@@ -6,7 +6,8 @@
     restored: '已恢复',
     purged: '已彻底删除',
     published: '已发布',
-    unpublished: '已取消发布'
+    unpublished: '已取消发布',
+    pushed: '已发布到 GitHub'
   })[notice] || notice %></p>
 <% } %>
 <% if (typeof error !== 'undefined' && error) { %>
@@ -15,6 +16,8 @@
     'tag-in-use': '该标签仍被文章使用，无法删除',
     duplicate: '名称已存在',
     invalid: '请检查输入内容',
-    'not-found': '文章不存在'
+    'not-found': '文章不存在',
+    busy: '发布正在进行中，请稍后重试',
+    failed: '发布失败，请查看发布状态或服务器日志'
   })[error] || error %></p>
 <% } %>

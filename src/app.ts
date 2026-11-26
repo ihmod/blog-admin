@@ -19,6 +19,7 @@ import { registerCategoryRoutes } from './routes/categories';
 import { registerTagRoutes } from './routes/tags';
 import { registerPostRoutes } from './routes/posts';
 import { registerMediaRoutes } from './routes/media';
+import { registerPublishRoutes } from './routes/publish';
 
 export interface AppDeps {
   db: Db;
@@ -89,6 +90,7 @@ export async function buildApp({ db, sqlite, config }: AppDeps): Promise<Fastify
   await registerTagRoutes(app, { db });
   await registerPostRoutes(app, { db });
   await registerMediaRoutes(app, { db, uploadsDir: config.UPLOADS_DIR });
+  await registerPublishRoutes(app, { db, config });
 
   app.setNotFoundHandler((request, reply) => {
     return reply.code(404).view('error.ejs', {
