@@ -1,0 +1,23 @@
+[Unit]
+Description=iHMOD Blog Admin
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=ihmod
+Group=ihmod
+WorkingDirectory=/opt/ihmod-admin
+EnvironmentFile=/etc/ihmod-admin.env
+ExecStart=/usr/bin/node dist/server.js
+Restart=always
+RestartSec=5
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/opt/ihmod-admin/data /var/backups/ihmod-admin
+ReadOnlyPaths=/opt/ihmod-admin/secrets
+
+[Install]
+WantedBy=multi-user.target
