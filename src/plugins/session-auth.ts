@@ -33,11 +33,11 @@ function isOriginAllowed(request: FastifyRequest, config: Config): boolean {
   const origin = request.headers.origin;
   if (!origin) return true;
 
-  let parsed: URL;
+  let parsed: URL | null = null;
   try {
     parsed = new URL(origin);
   } catch {
-    return false;
+    parsed = null;
   }
 
   const allowlist = (config.ALLOWED_ORIGINS ?? '')
@@ -45,10 +45,11 @@ function isOriginAllowed(request: FastifyRequest, config: Config): boolean {
     .map((value) => value.trim())
     .filter(Boolean);
   if (allowlist.includes(origin)) return true;
-  if (parsed.host === request.headers.host) return true;
+  if (parsed && parsed.host === request.headers.host) return true;
 
-  // Dev/test can sit behind IDE port forwarding where Origin != Host.
-  // CSRF token validation still applies; production stays strict.
+  // Dev/test can sit behind IDE port forwarding or sandboxed webviews that
+  // send a forwarded Origin or an opaque "null" Origin. CSRF token validation
+  // still applies; production stays strict.
   return config.NODE_ENV !== 'production';
 }
 
@@ -86,6 +87,10 @@ export function registerSessionAuth(app: FastifyInstance, options: Options): voi
         return reply.code(403).send('Invalid CSRF token');
       }
       if (!isOriginAllowed(request, config)) {
+        request.log.warn(
+          { origin: request.headers.origin, host: request.headers.host },
+          'origin rejected',
+        );
         return reply.code(403).send('Invalid origin');
       }
     }

@@ -36,9 +36,21 @@ describe('CSRF origin check', () => {
     expect(res.statusCode).toBe(302);
   });
 
+  it('allows an opaque/null origin in development/test', async () => {
+    current = await makeTestApp();
+    const res = await loginWithOrigin(current.app, 'null');
+    expect(res.statusCode).toBe(302);
+  });
+
   it('rejects a mismatched origin in production', async () => {
     current = await makeTestApp({ NODE_ENV: 'production' });
     const res = await loginWithOrigin(current.app, 'http://evil.example');
+    expect(res.statusCode).toBe(403);
+  });
+
+  it('rejects an opaque/null origin in production', async () => {
+    current = await makeTestApp({ NODE_ENV: 'production' });
+    const res = await loginWithOrigin(current.app, 'null');
     expect(res.statusCode).toBe(403);
   });
 
