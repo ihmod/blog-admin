@@ -89,6 +89,18 @@ Date handling: `frontmatter.date` wins; `YYMMDD.md` diary filenames are parsed;
 otherwise the file mtime is used and reported as an issue. Review the reported
 issues in the admin before publishing.
 
+## Publish and deploy
+
+- `/publish` shows the publish state and pushes the current database to
+  `ihmod/ihmod.github.io` `main`.
+- The exporter writes `source/_posts/**` and referenced `source/img/uploads/**`,
+  maintains `data/publish-manifest.json`, and never touches the theme/config.
+- The publisher refuses to run with uncommitted changes outside the managed
+  paths, commits only managed paths, rebases, and never force-pushes.
+- GitHub Actions builds and deploys Pages from `main`.
+- Deployment is native systemd (no Docker): see `deploy/DEPLOY.md`.
+- Emergency CLI publish: `npm run publish`.
+
 ## Layout
 
 - `src/` TypeScript source
