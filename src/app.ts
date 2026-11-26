@@ -64,7 +64,7 @@ export async function buildApp({ db, sqlite, config }: AppDeps): Promise<Fastify
     prefix: '/static/',
   });
   await app.register(fastifyStatic, {
-    root: path.resolve(__dirname, '../node_modules/vditor/dist'),
+    root: path.resolve(__dirname, '../node_modules/vditor'),
     prefix: '/static/vditor/',
     decorateReply: false,
   });

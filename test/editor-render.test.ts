@@ -31,15 +31,15 @@ describe('editor rendering', () => {
     expect(res.body).toContain('id="vditor"');
     expect(res.body).toContain('name="content_md"');
     expect(res.body).toContain('/static/editor.js');
-    expect(res.body).toContain('/static/vditor/index.min.js');
-    expect(res.body).toContain('/static/vditor/index.css');
+    expect(res.body).toContain('/static/vditor/dist/index.min.js');
+    expect(res.body).toContain('/static/vditor/dist/index.css');
   });
 
   it('serves the Vditor assets', async () => {
     current = await makeTestApp();
     const res = await current.app.inject({
       method: 'GET',
-      url: '/static/vditor/index.min.js',
+      url: '/static/vditor/dist/index.min.js',
     });
     expect(res.statusCode).toBe(200);
   });

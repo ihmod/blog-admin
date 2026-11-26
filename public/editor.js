@@ -16,6 +16,7 @@
     mode: 'sv',
     theme: 'classic',
     icon: 'material',
+    cdn: '/static/vditor',
     cache: { enable: false },
     value: input.value,
     toolbar: [
