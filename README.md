@@ -40,7 +40,7 @@ npm start
 
 ## Content management
 
-- `/posts` — list, filter, search; create/edit with a Markdown textarea.
+- `/posts` — list, filter, search; create/edit with the Vditor Markdown editor.
 - `/categories` — create, rename, delete (blocked while posts reference it).
 - `/tags` — create, rename, delete (blocked while posts reference it).
 - Post states: draft, published, trash (soft delete with restore/purge).
