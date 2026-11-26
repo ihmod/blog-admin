@@ -47,6 +47,18 @@ npm start
 - Slugs and `abbrlink` values are generated automatically; existing values are preserved.
 - Posts store a stable `source_path` under the post's category; changing category/slug moves it.
 
+## Editor and media
+
+- Posts use Vditor (served locally from `/static/vditor/`) with Markdown split preview.
+- Images are uploaded to `POST /api/media`, stored in `UPLOADS_DIR`
+  (default `./data/uploads`), and referenced as `/img/uploads/<uuid>.<ext>`.
+- The admin serves `/img/uploads/` only to authenticated sessions; the blog
+  publisher will copy these files into `source/img/uploads/` on publish.
+- Existing posts autosave title/content 2 seconds after typing and every 30
+  seconds; unchanged content is a no-op on the server.
+- `/media` lists uploaded images, shows their URLs, and blocks deletion while a
+  post still references the file.
+
 ## Import existing Hexo posts
 
 The importer reads Markdown files recursively and matches existing posts by
