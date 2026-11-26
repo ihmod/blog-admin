@@ -59,7 +59,8 @@ export async function buildApp({ db, sqlite, config }: AppDeps): Promise<Fastify
   // Registered before the static routes so /img/uploads/ requires a session.
   registerSessionAuth(app, { db, config });
 
-  fs.mkdirSync(config.UPLOADS_DIR, { recursive: true });
+  const uploadsDir = path.resolve(config.UPLOADS_DIR);
+  fs.mkdirSync(uploadsDir, { recursive: true });
   await app.register(fastifyStatic, {
     root: path.resolve(__dirname, '../public'),
     prefix: '/static/',
@@ -70,7 +71,7 @@ export async function buildApp({ db, sqlite, config }: AppDeps): Promise<Fastify
     decorateReply: false,
   });
   await app.register(fastifyStatic, {
-    root: config.UPLOADS_DIR,
+    root: uploadsDir,
     prefix: '/img/uploads/',
     decorateReply: false,
   });
@@ -89,7 +90,7 @@ export async function buildApp({ db, sqlite, config }: AppDeps): Promise<Fastify
   await registerCategoryRoutes(app, { db });
   await registerTagRoutes(app, { db });
   await registerPostRoutes(app, { db });
-  await registerMediaRoutes(app, { db, uploadsDir: config.UPLOADS_DIR });
+  await registerMediaRoutes(app, { db, uploadsDir });
   await registerPublishRoutes(app, { db, config });
 
   app.setNotFoundHandler((request, reply) => {
