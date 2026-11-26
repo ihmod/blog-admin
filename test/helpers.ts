@@ -46,6 +46,8 @@ export async function makeTestApp(overrides: Record<string, string> = {}): Promi
     ADMIN_PASSWORD: 'test-password-123',
     DATABASE_PATH: dbPath,
     UPLOADS_DIR: uploadsDir,
+    REPO_DIR: path.join(dir, 'repo'),
+    PUBLISH_MANIFEST_PATH: path.join(dir, 'publish-manifest.json'),
     LOGIN_RATE_LIMIT_MAX: '100',
     COOKIE_SECURE: 'false',
     ...overrides,
