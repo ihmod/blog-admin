@@ -24,6 +24,7 @@ const schema = z.object({
   SESSION_TTL_HOURS: z.coerce.number().int().positive().default(168),
   LOGIN_RATE_LIMIT_MAX: z.coerce.number().int().positive().default(5),
   COOKIE_SECURE: booleanFromString,
+  ALLOWED_ORIGINS: z.string().optional(),
 });
 
 export type Config = z.infer<typeof schema>;

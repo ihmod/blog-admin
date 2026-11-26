@@ -29,6 +29,29 @@ function cookieOptions(config: Config) {
   };
 }
 
+function isOriginAllowed(request: FastifyRequest, config: Config): boolean {
+  const origin = request.headers.origin;
+  if (!origin) return true;
+
+  let parsed: URL;
+  try {
+    parsed = new URL(origin);
+  } catch {
+    return false;
+  }
+
+  const allowlist = (config.ALLOWED_ORIGINS ?? '')
+    .split(',')
+    .map((value) => value.trim())
+    .filter(Boolean);
+  if (allowlist.includes(origin)) return true;
+  if (parsed.host === request.headers.host) return true;
+
+  // Dev/test can sit behind IDE port forwarding where Origin != Host.
+  // CSRF token validation still applies; production stays strict.
+  return config.NODE_ENV !== 'production';
+}
+
 export function registerSessionAuth(app: FastifyInstance, options: Options): void {
   const { db, config } = options;
 
@@ -62,15 +85,8 @@ export function registerSessionAuth(app: FastifyInstance, options: Options): voi
       if (!submitted || !safeEqual(csrfToken, String(submitted))) {
         return reply.code(403).send('Invalid CSRF token');
       }
-      const origin = request.headers.origin;
-      if (origin) {
-        try {
-          if (new URL(origin).host !== request.headers.host) {
-            return reply.code(403).send('Invalid origin');
-          }
-        } catch {
-          return reply.code(403).send('Invalid origin');
-        }
+      if (!isOriginAllowed(request, config)) {
+        return reply.code(403).send('Invalid origin');
       }
     }
 
