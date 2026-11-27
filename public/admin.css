@@ -311,7 +311,6 @@ select {
   margin: 0;
   padding: 0;
   background: #e9edf3;
-  border-bottom: 1px solid #d7dee8;
   border-radius: 13px 13px 0 0;
   scrollbar-width: thin;
 }
@@ -323,24 +322,23 @@ select {
   min-width: 96px;
   height: 100%;
   padding: 0 0.35rem 0 0.55rem;
-  border: 1px solid transparent;
-  border-bottom: 0;
+  border: 1px solid #d7dee8;
   border-radius: 9px 9px 0 0;
-  background: transparent;
+  background: #f5f8fc;
   color: #3f4c63;
   font-family: inherit;
   font-size: 12px;
   transition: background 0.15s ease, color 0.15s ease;
 }
 .editor-tab + .editor-tab { margin-left: -1px; }
-.editor-tab:hover { background: #f5f7fa; color: #101828; }
+.editor-tab:hover { background: #eef3fa; color: #101828; }
 .editor-tab.active {
   position: relative;
   z-index: 1;
-  margin-bottom: -1px;
   background: var(--paper);
   border-color: #d7dee8;
   border-top: 2px solid var(--accent);
+  border-bottom: 0;
   color: #101828;
 }
 .editor-tab-dot {
