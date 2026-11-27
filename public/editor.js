@@ -216,6 +216,7 @@
     const reopenButton = document.getElementById('toggle-side-open');
     const leftButton = document.getElementById('toggle-left');
     const leftReopenButton = document.getElementById('toggle-left-open');
+    const bothButton = document.getElementById('toggle-both');
     const fullscreenButton = document.getElementById('toggle-fullscreen');
     if (!shell) return;
 
@@ -226,6 +227,7 @@
         sideButton.setAttribute('aria-label', collapsed ? '展开设置栏' : '收起设置栏');
         sideButton.title = collapsed ? '展开设置栏' : '收起设置栏';
       }
+      updateBothButton();
     }
 
     if (sideButton) {
@@ -245,6 +247,7 @@
         leftButton.setAttribute('aria-label', collapsed ? '展开文章列表' : '收起文章列表');
         leftButton.title = collapsed ? '展开文章列表' : '收起文章列表';
       }
+      updateBothButton();
     }
 
     if (leftButton) {
@@ -256,6 +259,25 @@
     if (leftReopenButton) {
       leftReopenButton.addEventListener('click', () => setLeftCollapsed(false));
     }
+
+    function updateBothButton() {
+      if (!bothButton) return;
+      const bothOpen =
+        !shell.classList.contains('left-collapsed') && !shell.classList.contains('side-collapsed');
+      bothButton.setAttribute('aria-expanded', String(bothOpen));
+      bothButton.setAttribute('aria-label', bothOpen ? '收起左右栏' : '展开左右栏');
+      bothButton.title = bothOpen ? '收起左右栏' : '展开左右栏';
+    }
+
+    if (bothButton) {
+      bothButton.addEventListener('click', () => {
+        const bothOpen =
+          !shell.classList.contains('left-collapsed') && !shell.classList.contains('side-collapsed');
+        setLeftCollapsed(!bothOpen);
+        setSideCollapsed(!bothOpen);
+      });
+    }
+    updateBothButton();
 
     function setFullscreenButton(on) {
       if (!fullscreenButton) return;
