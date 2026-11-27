@@ -10,6 +10,7 @@
   setupTags();
   setupViewControls();
   setupTabs();
+  setupPostFilter();
 
   function countWords(text) {
     const cjk = (text.match(/[一-鿿]/g) || []).length;
@@ -76,15 +77,17 @@
 
   function applyViewMode(mode) {
     if (!form) return;
-    if (mode === 'editor') {
-      vditor.setPreviewMode('editor');
-      form.classList.remove('preview-only');
-    } else if (mode === 'preview') {
-      vditor.setPreviewMode('both');
-      form.classList.add('preview-only');
-    } else {
-      vditor.setPreviewMode('both');
-      form.classList.remove('preview-only');
+    if (typeof vditor.setPreviewMode === 'function') {
+      if (mode === 'editor') {
+        vditor.setPreviewMode('editor');
+        form.classList.remove('preview-only');
+      } else if (mode === 'preview') {
+        vditor.setPreviewMode('both');
+        form.classList.add('preview-only');
+      } else {
+        vditor.setPreviewMode('both');
+        form.classList.remove('preview-only');
+      }
     }
     modeButtons.forEach((button) => {
       button.setAttribute('aria-pressed', String(button.dataset.mode === mode));
@@ -96,7 +99,6 @@
   });
 
   applyViewMode('both');
-  setupPostFilter();
 
   function setupPostFilter() {
     const filter = document.getElementById('post-filter');
