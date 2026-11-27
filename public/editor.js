@@ -185,26 +185,58 @@
       reopenButton.addEventListener('click', () => setSideCollapsed(false));
     }
 
-    if (fullscreenButton) {
-      fullscreenButton.addEventListener('click', async () => {
+    function setFullscreenButton(on) {
+      if (!fullscreenButton) return;
+      fullscreenButton.setAttribute('aria-pressed', String(on));
+      fullscreenButton.setAttribute('aria-label', on ? '退出全屏' : '全屏');
+      fullscreenButton.title = on ? '退出全屏' : '全屏';
+    }
+
+    function setCssFullscreen(on) {
+      shell.classList.toggle('is-fullscreen', on);
+      document.body.classList.toggle('editor-fullscreen', on);
+      setFullscreenButton(on);
+    }
+
+    async function toggleFullscreen() {
+      if (document.fullscreenElement) {
         try {
-          if (!document.fullscreenElement) {
-            await shell.requestFullscreen();
-          } else {
-            await document.exitFullscreen();
-          }
+          await document.exitFullscreen();
         } catch {
-          // Fullscreen may be unavailable in an embedded preview.
+          // ignore
         }
+        setFullscreenButton(false);
+        return;
+      }
+      if (shell.classList.contains('is-fullscreen')) {
+        setCssFullscreen(false);
+        return;
+      }
+      try {
+        if (typeof shell.requestFullscreen === 'function') {
+          await shell.requestFullscreen();
+          setFullscreenButton(true);
+          return;
+        }
+      } catch {
+        // Fall back to the CSS fullscreen mode below.
+      }
+      setCssFullscreen(true);
+    }
+
+    if (fullscreenButton) {
+      fullscreenButton.addEventListener('click', () => {
+        void toggleFullscreen();
       });
     }
 
     document.addEventListener('fullscreenchange', () => {
-      const on = document.fullscreenElement === shell;
-      if (fullscreenButton) {
-        fullscreenButton.setAttribute('aria-pressed', String(on));
-        fullscreenButton.setAttribute('aria-label', on ? '退出全屏' : '全屏');
-        fullscreenButton.title = on ? '退出全屏' : '全屏';
+      setFullscreenButton(document.fullscreenElement === shell);
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && !document.fullscreenElement && shell.classList.contains('is-fullscreen')) {
+        setCssFullscreen(false);
       }
     });
   }
