@@ -176,7 +176,7 @@
 
         <% if (!isNew) { %>
           <div class="side-divider"></div>
-          <button class="btn-danger-ghost" type="submit" form="delete-form" id="delete-post">删除文章</button>
+          <button class="btn-danger-ghost" type="button" id="delete-post">删除文章</button>
         <% } %>
       </section>
 
@@ -189,12 +189,6 @@
     </button>
   </div>
 </form>
-
-<% if (!isNew) { %>
-  <form id="delete-form" method="post" action="/posts/<%= post.id %>/delete" hidden>
-    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-  </form>
-<% } %>
 
 <script src="/static/vditor/dist/index.min.js"></script>
 <script src="/static/editor.js?<%= Date.now() %>"></script>

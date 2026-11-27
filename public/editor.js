@@ -13,6 +13,7 @@
   setupPostFilter();
   setupTopImg();
   setupCategoryCreate();
+  setupDelete();
 
   function countWords(text) {
     const cjk = (text.match(/[一-鿿]/g) || []).length;
@@ -105,20 +106,25 @@
   function setupDelete() {
     const button = document.getElementById('delete-post');
     if (!button) return;
+    const id = container ? container.dataset.postId || '' : '';
+    const token =
+      (container && container.dataset.csrf) ||
+      document.querySelector('input[name=_csrf]')?.value ||
+      '';
     button.addEventListener('click', async (event) => {
-      if (!postId) return;
+      if (!id) return;
       event.preventDefault();
       button.disabled = true;
       try {
-        const res = await fetch('/posts/' + encodeURIComponent(postId) + '/delete', {
+        const res = await fetch('/posts/' + encodeURIComponent(id) + '/delete', {
           method: 'POST',
           headers: {
             'content-type': 'application/x-www-form-urlencoded',
-            'x-csrf-token': csrf,
+            'x-csrf-token': token,
             'x-requested-with': 'fetch',
             accept: 'application/json',
           },
-          body: new URLSearchParams({ _csrf: csrf }).toString(),
+          body: new URLSearchParams({ _csrf: token }).toString(),
         });
         if (!res.ok) throw new Error('delete failed');
         showToast('已移入回收站');
@@ -128,8 +134,6 @@
       }
     });
   }
-
-  setupDelete();
 
   function setupPostFilter() {
     const filter = document.getElementById('post-filter');
