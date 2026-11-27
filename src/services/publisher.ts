@@ -77,14 +77,15 @@ export function recoverPublishState(db: Db): void {
 }
 
 async function openRepo(options: PublishOptions): Promise<SimpleGit> {
+  const allowEnvironment = ['GIT_SSH_COMMAND'];
   if (!fs.existsSync(path.join(options.repoDir, '.git'))) {
     fs.mkdirSync(path.dirname(options.repoDir), { recursive: true });
-    const clone = simpleGit();
+    const clone = simpleGit({ allowEnvironment });
     if (options.keyPath) clone.env('GIT_SSH_COMMAND', sshCommand(options.keyPath));
     await clone.clone(options.repoUrl, options.repoDir, ['--branch', options.branch]);
   }
 
-  const git = simpleGit(options.repoDir);
+  const git = simpleGit({ baseDir: options.repoDir, allowEnvironment });
   if (options.keyPath) git.env('GIT_SSH_COMMAND', sshCommand(options.keyPath));
   await git.addConfig('user.name', options.authorName);
   await git.addConfig('user.email', options.authorEmail);
