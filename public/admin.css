@@ -666,3 +666,56 @@ select {
 @media (prefers-reduced-motion: reduce) {
   .segment span { transition: none; }
 }
+
+/* Editor view controls */
+.editor-bar-view { display: flex; align-items: center; gap: 0.25rem; flex: none; }
+.view-btn {
+  padding: 0.35rem 0.5rem;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: #fff;
+  color: var(--ink-soft);
+  font: inherit;
+  font-size: 0.76rem;
+  cursor: pointer;
+}
+.view-btn:hover { background: #f2f4f7; }
+.view-btn[aria-pressed="true"] { background: #eff4ff; border-color: #b2ccff; color: #175cd3; }
+.view-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+.editor-shell.side-collapsed .editor-grid { grid-template-columns: 1fr; }
+.editor-shell.side-collapsed .editor-side { display: none; }
+
+.vditor-counter { display: none !important; }
+
+body.editor-focus { overflow: hidden; }
+body.editor-focus .nav { display: none; }
+body.editor-focus .container { max-width: none; padding: 0; }
+
+.editor-shell.is-focus {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  margin: 0;
+  padding: 0.8rem;
+  overflow: auto;
+  background: var(--bg);
+}
+.editor-shell.is-focus .editor-grid { grid-template-columns: 1fr; }
+.editor-shell.is-focus .editor-side { display: none; }
+.editor-shell.is-focus .editor-canvas { min-height: calc(100vh - 100px); }
+.editor-shell.is-focus .editor-canvas .vditor { height: calc(100vh - 250px) !important; }
+
+.editor-shell:fullscreen {
+  padding: 0.8rem;
+  overflow: auto;
+  background: var(--bg);
+}
+.editor-shell:fullscreen .editor-grid { grid-template-columns: 1fr; }
+.editor-shell:fullscreen .editor-side { display: none; }
+.editor-shell:fullscreen .editor-canvas .vditor { height: calc(100vh - 250px) !important; }
+
+@media (max-width: 820px) {
+  .editor-bar-view { order: 2; }
+  .editor-bar-actions { order: 2; }
+}

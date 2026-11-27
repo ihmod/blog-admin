@@ -8,6 +8,7 @@
 
   setupTags();
   setupStatusPreview();
+  setupViewControls();
 
   function countWords(text) {
     const cjk = (text.match(/[一-鿿]/g) || []).length;
@@ -29,12 +30,15 @@
   let saving = false;
 
   const vditor = new Vditor(container.id, {
-    height: window.matchMedia('(max-width: 760px)').matches ? 420 : 600,
+    height: window.matchMedia('(max-width: 760px)').matches
+      ? 420
+      : Math.max(520, window.innerHeight - 320),
     mode: 'sv',
     theme: 'classic',
     icon: 'ant',
     cdn: '/static/vditor',
     cache: { enable: false },
+    counter: { enable: false },
     value: input.value,
     toolbar: [
       'headings', 'bold', 'italic', 'strike', '|',
@@ -113,6 +117,69 @@
   }
 
   window.setInterval(save, 30000);
+
+  function setupViewControls() {
+    const shell = document.getElementById('post-form');
+    const sideButton = document.getElementById('toggle-side');
+    const focusButton = document.getElementById('toggle-focus');
+    const fullscreenButton = document.getElementById('toggle-fullscreen');
+    if (!shell) return;
+
+    if (sideButton) {
+      sideButton.addEventListener('click', () => {
+        const collapsed = shell.classList.toggle('side-collapsed');
+        sideButton.textContent = collapsed ? '显示设置' : '设置';
+        sideButton.setAttribute('aria-pressed', String(collapsed));
+      });
+    }
+
+    function setFocus(on) {
+      shell.classList.toggle('is-focus', on);
+      document.body.classList.toggle('editor-focus', on);
+      if (focusButton) {
+        focusButton.textContent = on ? '退出专注' : '专注';
+        focusButton.setAttribute('aria-pressed', String(on));
+      }
+    }
+
+    if (focusButton) {
+      focusButton.addEventListener('click', () => {
+        setFocus(!shell.classList.contains('is-focus'));
+      });
+    }
+
+    if (fullscreenButton) {
+      fullscreenButton.addEventListener('click', async () => {
+        try {
+          if (!document.fullscreenElement) {
+            await shell.requestFullscreen();
+          } else {
+            await document.exitFullscreen();
+          }
+        } catch {
+          // Fullscreen may be unavailable in an embedded preview.
+        }
+      });
+    }
+
+    document.addEventListener('fullscreenchange', () => {
+      const on = document.fullscreenElement === shell;
+      if (fullscreenButton) {
+        fullscreenButton.textContent = on ? '退出全屏' : '全屏';
+        fullscreenButton.setAttribute('aria-pressed', String(on));
+      }
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (
+        event.key === 'Escape' &&
+        !document.fullscreenElement &&
+        shell.classList.contains('is-focus')
+      ) {
+        setFocus(false);
+      }
+    });
+  }
 
   function setupStatusPreview() {
     const doc = document.querySelector('.doc-status');
