@@ -38,7 +38,7 @@
     icon: 'ant',
     cdn: '/static/vditor',
     cache: { enable: false },
-    counter: { enable: false },
+    counter: { enable: true },
     value: input.value,
     toolbar: [
       'headings', 'bold', 'italic', 'strike', '|',
@@ -69,6 +69,17 @@
       schedule();
     },
   });
+
+  const previewButton = document.getElementById('toggle-preview');
+  let previewOpen = true;
+  if (previewButton) {
+    previewButton.addEventListener('click', () => {
+      previewOpen = !previewOpen;
+      vditor.setPreviewMode(previewOpen ? 'both' : 'editor');
+      previewButton.textContent = previewOpen ? '关闭预览' : '打开预览';
+      previewButton.setAttribute('aria-pressed', String(previewOpen));
+    });
+  }
 
   function setStatus(text) {
     if (statusText) statusText.textContent = text;

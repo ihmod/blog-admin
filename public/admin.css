@@ -686,7 +686,7 @@ select {
 .editor-shell.side-collapsed .editor-grid { grid-template-columns: 1fr; }
 .editor-shell.side-collapsed .editor-side { display: none; }
 
-.vditor-counter { display: none !important; }
+.vditor-preview__action { display: none !important; }
 
 body.editor-focus { overflow: hidden; }
 body.editor-focus .nav { display: none; }
