@@ -100,7 +100,7 @@
     button.addEventListener('click', () => applyViewMode(button.dataset.mode));
   });
 
-  applyViewMode('both');
+  applyViewMode(postId ? 'both' : 'editor');
 
   function setupPostFilter() {
     const filter = document.getElementById('post-filter');
