@@ -102,41 +102,6 @@
 
   applyViewMode(postId ? 'both' : 'editor');
 
-  function setupEditorLock() {
-    const button = document.getElementById('toggle-lock');
-    let locked = false;
-
-    function setLocked(next) {
-      locked = next;
-      if (locked) vditor.disabled();
-      else vditor.enable();
-      if (form) form.classList.toggle('content-locked', locked);
-      if (button) {
-        button.setAttribute('aria-pressed', String(locked));
-        button.setAttribute('aria-label', locked ? '解锁正文 (A)' : '锁定正文 (A)');
-        button.title = locked ? '解锁正文 (A)' : '锁定正文 (A)';
-      }
-    }
-
-    if (button) {
-      button.addEventListener('click', () => setLocked(!locked));
-    }
-
-    document.addEventListener('keydown', (event) => {
-      if (event.repeat || event.ctrlKey || event.metaKey || event.altKey || event.shiftKey) return;
-      if (event.key.toLowerCase() !== 'a') return;
-      const target = event.target;
-      const isEditable =
-        target instanceof HTMLElement &&
-        (target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName));
-      if (isEditable) return;
-      event.preventDefault();
-      setLocked(!locked);
-    });
-  }
-
-  setupEditorLock();
-
   function setupPostFilter() {
     const filter = document.getElementById('post-filter');
     const categoryFilter = document.getElementById('post-category-filter');

@@ -936,12 +936,6 @@ select {
 #toggle-fullscreen .icon-compress { display: none; }
 #toggle-fullscreen[aria-pressed="true"] .icon-expand { display: none; }
 #toggle-fullscreen[aria-pressed="true"] .icon-compress { display: block; }
-#toggle-lock .icon-unlock { display: none; }
-#toggle-lock[aria-pressed="true"] .icon-lock { display: none; }
-#toggle-lock[aria-pressed="true"] .icon-unlock { display: block; }
-#toggle-lock[aria-pressed="true"] { color: #b54708; border-color: #fedf89; background: #fffaeb; }
-.editor-shell.content-locked .editor-canvas .vditor { background: #f8f9fb; }
-.editor-shell.content-locked .editor-canvas .vditor-toolbar { opacity: 0.55; }
 
 .editor-mode {
   display: inline-flex;
