@@ -5,10 +5,12 @@
   const titleInput = document.querySelector('[name=title]');
   const statusText = document.getElementById('autosave-text');
   const wordCount = document.getElementById('word-count');
+  let dirty = false;
 
   setupTags();
   setupStatusPreview();
   setupViewControls();
+  setupTabs();
 
   function countWords(text) {
     const cjk = (text.match(/[一-鿿]/g) || []).length;
@@ -66,6 +68,7 @@
     input: function (value) {
       input.value = value;
       updateCount(value);
+      dirty = true;
       schedule();
     },
   });
@@ -220,6 +223,136 @@
     });
   }
 
+  function setupTabs() {
+    const bar = document.getElementById('editor-tabs');
+    const pageId = container ? container.dataset.postId || 'new' : 'new';
+    const titleField = document.querySelector('[name=title]');
+    if (!bar) return;
+
+    const STORAGE = 'ihmod.editor.tabs';
+
+    function readTabs() {
+      try {
+        const parsed = JSON.parse(localStorage.getItem(STORAGE) || '[]');
+        return Array.isArray(parsed)
+          ? parsed.filter((tab) => tab && tab.id && typeof tab.title === 'string')
+          : [];
+      } catch {
+        return [];
+      }
+    }
+
+    function saveTabs() {
+      try {
+        localStorage.setItem(STORAGE, JSON.stringify(tabs));
+      } catch {
+        // ignore private-mode/quota errors
+      }
+    }
+
+    function tabHref(id) {
+      return id === 'new' ? '/posts/new' : '/posts/' + encodeURIComponent(id);
+    }
+
+    function closeTab(id) {
+      tabs = tabs.filter((tab) => tab.id !== id);
+      saveTabs();
+      if (id === pageId) {
+        const next = tabs[0];
+        window.location.href = next ? tabHref(next.id) : '/posts';
+      } else {
+        render();
+      }
+    }
+
+    function render() {
+      bar.innerHTML = '';
+      tabs.forEach((tab) => {
+        const item = document.createElement('div');
+        item.className = 'editor-tab' + (tab.id === pageId ? ' active' : '');
+        const link = document.createElement('a');
+        link.className = 'editor-tab-link';
+        link.href = tabHref(tab.id);
+        link.textContent = tab.title;
+        link.setAttribute('role', 'tab');
+        link.setAttribute('aria-selected', String(tab.id === pageId));
+        const close = document.createElement('button');
+        close.type = 'button';
+        close.className = 'editor-tab-close';
+        close.setAttribute('aria-label', '关闭 ' + tab.title);
+        close.textContent = '×';
+        close.addEventListener('click', (event) => {
+          event.preventDefault();
+          event.stopPropagation();
+          closeTab(tab.id);
+        });
+        item.append(link, close);
+        bar.appendChild(item);
+      });
+      const active = bar.querySelector('.editor-tab.active');
+      if (active) active.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+    }
+
+    let tabs = readTabs();
+    const currentTitle =
+      titleField && titleField.value.trim()
+        ? titleField.value.trim()
+        : pageId === 'new'
+          ? '新建文章'
+          : '未命名';
+    const existing = tabs.find((tab) => tab.id === pageId);
+    if (existing) existing.title = currentTitle;
+    else tabs.unshift({ id: pageId, title: currentTitle });
+    tabs = tabs.slice(0, 12);
+    saveTabs();
+    render();
+
+    if (titleField) {
+      titleField.addEventListener('input', () => {
+        const active = tabs.find((tab) => tab.id === pageId);
+        if (!active) return;
+        active.title = titleField.value.trim() || (pageId === 'new' ? '新建文章' : '未命名');
+        saveTabs();
+        const activeLink = bar.querySelector('.editor-tab.active .editor-tab-link');
+        if (activeLink) activeLink.textContent = active.title;
+      });
+    }
+
+    document.querySelectorAll('.post-link').forEach((link) => {
+      link.addEventListener('click', () => {
+        const href = link.getAttribute('href') || '';
+        const match = href.match(/^\/posts\/([^/?#]+)$/);
+        if (!match) return;
+        const id = match[1];
+        const title = (link.querySelector('.post-title')?.textContent || '未命名').trim();
+        if (!tabs.some((tab) => tab.id === id)) {
+          tabs.unshift({ id, title });
+          tabs = tabs.slice(0, 12);
+          saveTabs();
+        }
+      });
+    });
+
+    document.addEventListener('input', (event) => {
+      if (!form || !form.contains(event.target) || event.target.id === 'post-filter') return;
+      dirty = true;
+    });
+    document.addEventListener('change', (event) => {
+      if (!form || !form.contains(event.target) || event.target.id === 'post-filter') return;
+      dirty = true;
+    });
+    if (form) {
+      form.addEventListener('submit', () => {
+        dirty = false;
+      });
+    }
+    window.addEventListener('beforeunload', (event) => {
+      if (!dirty) return;
+      event.preventDefault();
+      event.returnValue = '';
+    });
+  }
+
   function setupTags() {
     const hidden = document.getElementById('tags');
     const chips = document.getElementById('tag-chips');
@@ -257,6 +390,7 @@
     const sync = () => {
       tagInput.value = '';
       render();
+      dirty = true;
     };
 
     const add = (raw) => {
