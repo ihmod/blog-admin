@@ -144,29 +144,6 @@
         </div>
       </section>
 
-      <% if (!isNew && post.abbrlink) { %>
-        <section class="side-card">
-          <h2 class="side-title">链接</h2>
-          <div class="permalink">
-            <span class="mono">/posts/<%= post.abbrlink %>.html</span>
-            <% if (post.status === 'published') { %>
-              <a href="https://ihmod.github.io/posts/<%= post.abbrlink %>.html" target="_blank" rel="noreferrer">查看线上 →</a>
-            <% } %>
-          </div>
-        </section>
-      <% } %>
-
-      <% if (!isNew) { %>
-        <section class="side-card side-danger">
-          <h2 class="side-title">危险操作</h2>
-          <div class="danger-actions">
-            <% if (post.status === 'published') { %>
-              <button class="btn-danger-ghost" type="submit" form="unpublish-form">取消发布</button>
-            <% } %>
-            <button class="btn-danger-ghost" type="submit" form="delete-form">删除文章</button>
-          </div>
-        </section>
-      <% } %>
     </aside>
 
     <button type="button" class="side-reopen" id="toggle-side-open" aria-label="展开设置栏" title="展开设置栏">
@@ -176,15 +153,6 @@
     </button>
   </div>
 </form>
-
-<% if (!isNew) { %>
-  <form id="unpublish-form" method="post" action="/posts/<%= post.id %>/unpublish" hidden>
-    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-  </form>
-  <form id="delete-form" method="post" action="/posts/<%= post.id %>/delete" hidden>
-    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-  </form>
-<% } %>
 
 <script src="/static/vditor/dist/index.min.js"></script>
 <script src="/static/editor.js?<%= Date.now() %>"></script>

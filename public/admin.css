@@ -693,26 +693,6 @@ select {
 }
 .segment input:focus-visible + span { outline: 2px solid var(--accent); outline-offset: 1px; }
 
-.permalink { display: flex; flex-direction: column; gap: 0.4rem; }
-.permalink .mono { color: var(--ink-soft); word-break: break-all; }
-.permalink a { font-size: 0.8rem; }
-
-.side-danger { border-color: #fecdca; background: #fffbfa; }
-.side-danger .side-title { color: #b42318; }
-.danger-actions { display: flex; flex-direction: column; gap: 0.5rem; }
-.btn-danger-ghost {
-  width: 100%;
-  padding: 0.45rem 0.6rem;
-  border: 1px solid #fecdca;
-  border-radius: 8px;
-  background: #fff;
-  color: #b42318;
-  font: inherit;
-  font-size: 0.82rem;
-  cursor: pointer;
-}
-.btn-danger-ghost:hover { background: #fef3f2; }
-
 @media (max-width: 1280px) {
   .editor-grid { grid-template-columns: 1fr; }
   .editor-left,
