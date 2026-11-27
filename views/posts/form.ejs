@@ -44,9 +44,24 @@
           <a class="side-link" href="/posts">全部</a>
         </div>
         <input id="post-filter" class="side-search" type="search" placeholder="搜索文章..." autocomplete="off">
+        <div class="post-filters">
+          <select id="post-category-filter" aria-label="按分类筛选">
+            <option value="">全部分类</option>
+            <option value="未分类">未分类</option>
+            <% for (const category of categories) { %>
+              <option value="<%= category.name %>"><%= category.name %></option>
+            <% } %>
+          </select>
+          <select id="post-tag-filter" aria-label="按标签筛选">
+            <option value="">全部标签</option>
+            <% for (const tag of tags) { %>
+              <option value="<%= tag.name %>"><%= tag.name %></option>
+            <% } %>
+          </select>
+        </div>
         <ul class="post-list" id="post-list">
           <% for (const item of recentPosts) { %>
-            <li data-title="<%= item.title %>">
+            <li data-title="<%= item.title %>" data-category="<%= item.categoryName %>" data-tags="<%= item.tags.join('|') %>">
               <a class="post-link <%= !isNew && item.id === post.id ? 'active' : '' %>" href="/posts/<%= item.id %>">
                 <span class="post-title"><%= item.title %></span>
                 <span class="post-dot <%= item.status %>"></span>

@@ -100,15 +100,30 @@
 
   function setupPostFilter() {
     const filter = document.getElementById('post-filter');
+    const categoryFilter = document.getElementById('post-category-filter');
+    const tagFilter = document.getElementById('post-tag-filter');
     const list = document.getElementById('post-list');
-    if (!filter || !list) return;
-    filter.addEventListener('input', () => {
-      const query = filter.value.trim().toLowerCase();
+    if (!list) return;
+
+    function apply() {
+      const query = (filter?.value || '').trim().toLowerCase();
+      const category = categoryFilter?.value || '';
+      const tag = tagFilter?.value || '';
       list.querySelectorAll('li').forEach((item) => {
         const title = (item.dataset.title || '').toLowerCase();
-        item.hidden = Boolean(query) && !title.includes(query);
+        const itemCategory = item.dataset.category || '';
+        const itemTags = (item.dataset.tags || '').split('|');
+        const matchesQuery = !query || title.includes(query);
+        const matchesCategory = !category || itemCategory === category;
+        const matchesTag = !tag || itemTags.includes(tag);
+        item.hidden = !(matchesQuery && matchesCategory && matchesTag);
       });
-    });
+    }
+
+    filter?.addEventListener('input', apply);
+    categoryFilter?.addEventListener('change', apply);
+    tagFilter?.addEventListener('change', apply);
+    apply();
   }
 
   function setStatus(text) {

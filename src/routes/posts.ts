@@ -1,6 +1,7 @@
 import type { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import type { Db } from '../db/client';
 import { listCategories } from '../lib/categories';
+import { listTags } from '../lib/tags';
 import {
   PostNotFoundError,
   PostValidationError,
@@ -97,6 +98,7 @@ async function renderForm(
     user: request.user,
     csrfToken: request.csrfToken,
     categories: listCategories(db),
+    tags: listTags(db),
     recentPosts: listPosts(db, { status: 'all', page: 1, pageSize: 50 }).items,
     trashCount: listPosts(db, { status: 'trash', page: 1, pageSize: 1 }).total,
     ...data,
