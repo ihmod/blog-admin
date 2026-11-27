@@ -128,6 +128,7 @@
         });
         if (!res.ok) throw new Error('delete failed');
         showToast('已移入回收站');
+        window.dispatchEvent(new CustomEvent('ihmod:post-deleted', { detail: { id } }));
       } catch (error) {
         showToast('删除失败');
         button.disabled = false;
@@ -524,6 +525,12 @@
         event.preventDefault();
         void saveBeforeNavigate(link.href);
       });
+    });
+
+    window.addEventListener('ihmod:post-deleted', (event) => {
+      const detail = event.detail;
+      if (!detail || !detail.id) return;
+      setTimeout(() => closeTab(detail.id), 400);
     });
 
     document.querySelectorAll('input[name=status]').forEach((radio) => {
