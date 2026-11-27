@@ -146,16 +146,27 @@
   function setupViewControls() {
     const shell = document.getElementById('post-form');
     const sideButton = document.getElementById('toggle-side');
+    const reopenButton = document.getElementById('toggle-side-open');
     const fullscreenButton = document.getElementById('toggle-fullscreen');
     if (!shell) return;
 
-    if (sideButton) {
-      sideButton.addEventListener('click', () => {
-        const collapsed = shell.classList.toggle('side-collapsed');
-        sideButton.setAttribute('aria-pressed', String(collapsed));
+    function setSideCollapsed(collapsed) {
+      shell.classList.toggle('side-collapsed', collapsed);
+      if (sideButton) {
+        sideButton.setAttribute('aria-expanded', String(!collapsed));
         sideButton.setAttribute('aria-label', collapsed ? '展开设置栏' : '收起设置栏');
         sideButton.title = collapsed ? '展开设置栏' : '收起设置栏';
+      }
+    }
+
+    if (sideButton) {
+      sideButton.addEventListener('click', () => {
+        setSideCollapsed(!shell.classList.contains('side-collapsed'));
       });
+    }
+
+    if (reopenButton) {
+      reopenButton.addEventListener('click', () => setSideCollapsed(false));
     }
 
     if (fullscreenButton) {
@@ -175,8 +186,9 @@
     document.addEventListener('fullscreenchange', () => {
       const on = document.fullscreenElement === shell;
       if (fullscreenButton) {
-        fullscreenButton.textContent = on ? '退出全屏' : '全屏';
         fullscreenButton.setAttribute('aria-pressed', String(on));
+        fullscreenButton.setAttribute('aria-label', on ? '退出全屏' : '全屏');
+        fullscreenButton.title = on ? '退出全屏' : '全屏';
       }
     });
   }

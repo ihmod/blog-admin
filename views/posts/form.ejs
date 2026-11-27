@@ -19,12 +19,14 @@
         <button type="button" class="mode-btn" data-mode="both" aria-pressed="true">并排</button>
         <button type="button" class="mode-btn" data-mode="preview" aria-pressed="false">预览</button>
       </div>
-      <button type="button" class="view-btn icon-btn" id="toggle-side" aria-pressed="false" aria-label="收起设置栏" title="收起设置栏">
-        <svg viewBox="0 0 20 20" width="14" height="14" aria-hidden="true">
-          <path d="M7.5 4.5l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+      <button type="button" class="view-btn icon-btn" id="toggle-fullscreen" aria-pressed="false" aria-label="全屏" title="全屏">
+        <svg class="icon-expand" viewBox="0 0 20 20" width="14" height="14" aria-hidden="true">
+          <path d="M8 3H3v5M17 8V3h-5M12 17h5v-5M3 12v5h5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <svg class="icon-compress" viewBox="0 0 20 20" width="14" height="14" aria-hidden="true">
+          <path d="M3 8h5V3M17 12h-5v5M12 3v5h5M8 17v-5H3" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </button>
-      <button type="button" class="view-btn" id="toggle-fullscreen" aria-pressed="false">全屏</button>
     </div>
     <div class="editor-bar-actions">
       <a class="btn-ghost" href="/posts">取消</a>
@@ -58,7 +60,14 @@
 
     <aside class="editor-side">
       <section class="side-card">
-        <h2 class="side-title">文章设置</h2>
+        <div class="side-head">
+          <h2 class="side-title">文章设置</h2>
+          <button type="button" class="side-toggle" id="toggle-side" aria-expanded="true" aria-label="收起设置栏" title="收起设置栏">
+            <svg viewBox="0 0 20 20" width="14" height="14" aria-hidden="true">
+              <path d="M7.5 4.5l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
 
         <div class="side-field">
           <label for="category_id">分类</label>
@@ -138,6 +147,12 @@
         </section>
       <% } %>
     </aside>
+
+    <button type="button" class="side-reopen" id="toggle-side-open" aria-label="展开设置栏" title="展开设置栏">
+      <svg viewBox="0 0 20 20" width="14" height="14" aria-hidden="true">
+        <path d="M12.5 4.5l-5 5 5 5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
   </div>
 </form>
 
