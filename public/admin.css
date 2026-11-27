@@ -322,16 +322,16 @@ select {
   min-width: 96px;
   height: 100%;
   padding: 0 0.35rem 0 0.55rem;
-  border: 1px solid #cfd4dc;
+  border: 1px solid #d5dae1;
   border-radius: 9px 9px 0 0;
-  background: #e4e7ec;
-  color: #344054;
+  background: transparent;
+  color: #475467;
   font-family: inherit;
   font-size: 12px;
   transition: background 0.15s ease, color 0.15s ease;
 }
 .editor-tab + .editor-tab { margin-left: -1px; }
-.editor-tab:hover { background: #dbe0e6; color: #101828; }
+.editor-tab:hover { background: rgba(255, 255, 255, 0.6); color: #101828; }
 .editor-tab.active {
   position: relative;
   z-index: 1;
