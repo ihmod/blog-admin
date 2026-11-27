@@ -28,7 +28,6 @@
   const postId = container.dataset.postId || '';
   let timer = null;
   let saving = false;
-  let currentMode = 'both';
 
   const vditor = new Vditor(container.id, {
     height: window.matchMedia('(max-width: 760px)').matches
@@ -67,7 +66,6 @@
     input: function (value) {
       input.value = value;
       updateCount(value);
-      updateToc(value);
       schedule();
     },
   });
@@ -76,7 +74,6 @@
 
   function applyViewMode(mode) {
     if (!form) return;
-    currentMode = mode;
     if (mode === 'editor') {
       vditor.setPreviewMode('editor');
       form.classList.remove('preview-only');
@@ -98,62 +95,6 @@
 
   applyViewMode('both');
   setupPostFilter();
-  updateToc(input.value);
-
-  function parseHeadings(markdown) {
-    const headings = [];
-    let inFence = false;
-    for (const rawLine of markdown.split('\n')) {
-      const line = rawLine.trimStart();
-      if (/^(```|~~~)/.test(line)) {
-        inFence = !inFence;
-        continue;
-      }
-      if (inFence) continue;
-      const match = /^(#{1,6})\s+(.+?)\s*#*\s*$/.exec(line);
-      if (match) headings.push({ level: match[1].length, text: match[2] });
-    }
-    return headings;
-  }
-
-  function scrollToHeading(index) {
-    if (currentMode === 'editor') applyViewMode('both');
-    window.setTimeout(() => {
-      const nodes = document.querySelectorAll(
-        '.vditor-preview h1, .vditor-preview h2, .vditor-preview h3, .vditor-preview h4, .vditor-preview h5, .vditor-preview h6',
-      );
-      const node = nodes[index];
-      if (!node) return;
-      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      node.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
-    }, 60);
-  }
-
-  function updateToc(markdown) {
-    const list = document.getElementById('toc-list');
-    const count = document.getElementById('toc-count');
-    if (!list) return;
-    const headings = parseHeadings(markdown);
-    if (count) count.textContent = headings.length > 0 ? String(headings.length) : '';
-    list.innerHTML = '';
-    if (headings.length === 0) {
-      const empty = document.createElement('li');
-      empty.className = 'toc-empty';
-      empty.textContent = '暂无标题';
-      list.appendChild(empty);
-      return;
-    }
-    headings.forEach((heading, index) => {
-      const item = document.createElement('li');
-      const button = document.createElement('button');
-      button.type = 'button';
-      button.className = 'toc-item toc-level-' + heading.level;
-      button.textContent = heading.text;
-      button.addEventListener('click', () => scrollToHeading(index));
-      item.appendChild(button);
-      list.appendChild(item);
-    });
-  }
 
   function setupPostFilter() {
     const filter = document.getElementById('post-filter');

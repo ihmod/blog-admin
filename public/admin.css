@@ -571,7 +571,7 @@ select {
   list-style: none;
   margin: 0;
   padding: 0;
-  max-height: 260px;
+  max-height: calc(100vh - 230px);
   overflow: auto;
 }
 .post-list li { margin: 0; }
@@ -592,40 +592,6 @@ select {
 .post-dot.draft { background: #f79009; }
 .post-dot.published { background: #12b76a; }
 .side-hint { margin: 0.6rem 0 0; font-size: 0.72rem; color: var(--muted); }
-.toc-count { font-family: var(--mono); font-size: 0.72rem; color: var(--muted); }
-.toc-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  max-height: 300px;
-  overflow: auto;
-}
-.toc-list li { margin: 0; }
-.toc-item {
-  display: block;
-  width: 100%;
-  padding: 0.3rem 0.4rem;
-  border: 0;
-  border-radius: 6px;
-  background: transparent;
-  color: var(--ink-soft);
-  font: inherit;
-  font-size: 0.8rem;
-  text-align: left;
-  cursor: pointer;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.toc-item:hover { background: #f2f4f7; color: var(--ink); }
-.toc-level-1 { padding-left: 0.4rem; font-weight: 600; }
-.toc-level-2 { padding-left: 1rem; }
-.toc-level-3 { padding-left: 1.6rem; }
-.toc-level-4 { padding-left: 2.2rem; }
-.toc-level-5 { padding-left: 2.8rem; }
-.toc-level-6 { padding-left: 3.4rem; }
-.toc-empty { padding: 0.4rem; font-size: 0.78rem; color: var(--muted); }
-
 .side-field { display: flex; flex-direction: column; gap: 0.35rem; margin-bottom: 0.9rem; }
 .side-field:last-child { margin-bottom: 0; }
 .side-field > label { margin: 0; font-size: 11.5px; font-weight: 600; color: var(--ink-soft); }
