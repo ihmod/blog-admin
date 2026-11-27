@@ -88,6 +88,10 @@ export function listPublishRuns(db: Db, limit = 20): PublishRun[] {
   return db.select().from(publishRuns).orderBy(desc(publishRuns.id)).limit(limit).all();
 }
 
+export function getLatestPublishRun(db: Db): PublishRun | undefined {
+  return db.select().from(publishRuns).orderBy(desc(publishRuns.id)).limit(1).get();
+}
+
 async function openRepo(options: PublishOptions): Promise<SimpleGit> {
   const allowEnvironment = ['GIT_SSH_COMMAND'];
   if (!fs.existsSync(path.join(options.repoDir, '.git'))) {

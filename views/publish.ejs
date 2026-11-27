@@ -20,10 +20,14 @@
   <% if (state.finishedAt) { %>
     <p class="muted">完成时间：<%= state.finishedAt %></p>
   <% } %>
-  <form method="post" action="/publish">
+  <form method="post" action="/publish" id="publish-form">
     <input type="hidden" name="_csrf" value="<%= csrfToken %>">
     <button type="submit" <%= state.status === 'running' ? 'disabled' : '' %>>发布到 GitHub</button>
   </form>
+  <div class="publish-live" id="publish-live" hidden>
+    <p class="publish-live-status" id="publish-live-status">正在启动发布…</p>
+    <pre class="publish-log" id="publish-live-log"></pre>
+  </div>
   <p class="muted">
     发布后由 GitHub Actions 构建并部署：
     <a href="https://github.com/ihmod/ihmod.github.io/actions" target="_blank" rel="noreferrer">
@@ -61,4 +65,5 @@
     </div>
   <% } %>
 </section>
+<script src="/static/publish.js?<%= Date.now() %>"></script>
 <%- include('partials/footer') %>

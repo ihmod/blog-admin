@@ -3,6 +3,7 @@ import type { Config } from '../config';
 import type { Db } from '../db/client';
 import {
   PublishBusyError,
+  getLatestPublishRun,
   getPublishState,
   listPublishRuns,
   publish,
@@ -45,6 +46,18 @@ export async function registerPublishRoutes(
   });
 
   app.post('/publish', async (request, reply) => {
+    const wantsJson =
+      request.headers['x-requested-with'] === 'fetch' ||
+      (request.headers.accept ?? '').includes('application/json');
+    if (wantsJson) {
+      try {
+        void publish(db, publishOptionsFromConfig(config)).catch(() => {});
+      } catch (error) {
+        if (error instanceof PublishBusyError) return reply.code(409).send({ error: 'busy' });
+        throw error;
+      }
+      return reply.send({ started: true });
+    }
     try {
       await publish(db, publishOptionsFromConfig(config));
     } catch (error) {
@@ -56,5 +69,9 @@ export async function registerPublishRoutes(
 
   app.get('/api/publish/state', async (request, reply) => {
     return reply.send(getPublishState(db));
+  });
+
+  app.get('/api/publish/runs/latest', async (request, reply) => {
+    return reply.send(getLatestPublishRun(db) ?? null);
   });
 }
