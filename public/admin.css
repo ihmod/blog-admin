@@ -683,10 +683,46 @@ select {
 .view-btn[aria-pressed="true"] { background: #eff4ff; border-color: #b2ccff; color: #175cd3; }
 .view-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
 
+.editor-mode {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 2px;
+  background: #f2f4f7;
+  border-radius: 8px;
+}
+.mode-btn {
+  padding: 0.3rem 0.55rem;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.76rem;
+  cursor: pointer;
+}
+.mode-btn:hover { color: var(--ink); background: #e9edf3; }
+.mode-btn[aria-pressed="true"] {
+  background: #fff;
+  color: var(--ink);
+  font-weight: 600;
+  box-shadow: 0 1px 2px rgba(16, 24, 40, 0.12);
+}
+.mode-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+
 .editor-shell.side-collapsed .editor-grid { grid-template-columns: 1fr; }
 .editor-shell.side-collapsed .editor-side { display: none; }
 
 .vditor-preview__action { display: none !important; }
+
+.editor-canvas .vditor-preview { background: #f4f7fc; }
+.editor-canvas .vditor-preview .vditor-reset { background: transparent; }
+.editor-shell.preview-only .vditor-sv { display: none !important; }
+.editor-shell.preview-only .vditor-resize { display: none !important; }
+.editor-shell.preview-only .vditor-preview {
+  width: 100% !important;
+  flex: 1 1 auto !important;
+}
 
 body.editor-focus { overflow: hidden; }
 body.editor-focus .nav { display: none; }

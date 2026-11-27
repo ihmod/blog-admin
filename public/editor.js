@@ -70,16 +70,30 @@
     },
   });
 
-  const previewButton = document.getElementById('toggle-preview');
-  let previewOpen = true;
-  if (previewButton) {
-    previewButton.addEventListener('click', () => {
-      previewOpen = !previewOpen;
-      vditor.setPreviewMode(previewOpen ? 'both' : 'editor');
-      previewButton.textContent = previewOpen ? '关闭预览' : '打开预览';
-      previewButton.setAttribute('aria-pressed', String(previewOpen));
+  const modeButtons = document.querySelectorAll('.mode-btn');
+
+  function applyViewMode(mode) {
+    if (!form) return;
+    if (mode === 'editor') {
+      vditor.setPreviewMode('editor');
+      form.classList.remove('preview-only');
+    } else if (mode === 'preview') {
+      vditor.setPreviewMode('both');
+      form.classList.add('preview-only');
+    } else {
+      vditor.setPreviewMode('both');
+      form.classList.remove('preview-only');
+    }
+    modeButtons.forEach((button) => {
+      button.setAttribute('aria-pressed', String(button.dataset.mode === mode));
     });
   }
+
+  modeButtons.forEach((button) => {
+    button.addEventListener('click', () => applyViewMode(button.dataset.mode));
+  });
+
+  applyViewMode('both');
 
   function setStatus(text) {
     if (statusText) statusText.textContent = text;

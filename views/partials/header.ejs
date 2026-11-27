@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title><%= typeof title !== 'undefined' && title ? title + ' | ' : '' %>iHMOD Admin</title>
   <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
-  <link rel="stylesheet" href="/static/admin.css">
+  <link rel="stylesheet" href="/static/admin.css?<%= Date.now() %>">
 <% if (typeof vditor !== 'undefined' && vditor) { %>
   <link rel="stylesheet" href="/static/vditor/dist/index.css">
 <% } %>

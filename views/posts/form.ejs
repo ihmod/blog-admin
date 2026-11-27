@@ -14,11 +14,14 @@
       </span>
     </div>
     <div class="editor-bar-view" role="group" aria-label="编辑视图">
+      <div class="editor-mode" role="group" aria-label="显示模式">
+        <button type="button" class="mode-btn" data-mode="editor" aria-pressed="false">编辑</button>
+        <button type="button" class="mode-btn" data-mode="both" aria-pressed="true">并排</button>
+        <button type="button" class="mode-btn" data-mode="preview" aria-pressed="false">预览</button>
+      </div>
       <button type="button" class="view-btn" id="toggle-side" aria-pressed="false">设置</button>
       <button type="button" class="view-btn" id="toggle-focus" aria-pressed="false">专注</button>
       <button type="button" class="view-btn" id="toggle-fullscreen" aria-pressed="false">全屏</button>
-      <button type="button" class="view-btn" id="toggle-preview" aria-pressed="true">关闭预览</button>
-      <button type="button" class="view-btn" id="toggle-preview" aria-pressed="true">关闭预览</button>
     </div>
     <div class="editor-bar-actions">
       <a class="btn-ghost" href="/posts">取消</a>
@@ -145,5 +148,5 @@
 <% } %>
 
 <script src="/static/vditor/dist/index.min.js"></script>
-<script src="/static/editor.js"></script>
+<script src="/static/editor.js?<%= Date.now() %>"></script>
 <%- include('../partials/footer') %>
