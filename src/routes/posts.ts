@@ -100,6 +100,7 @@ async function renderForm(
     categories: listCategories(db),
     tags: listTags(db),
     recentPosts: listPosts(db, { status: 'all', page: 1, pageSize: 50 }).items,
+    notice: (request.query as Query).notice,
     ...data,
   });
 }
@@ -130,8 +131,9 @@ export async function registerPostRoutes(
 
   app.post('/posts', async (request, reply) => {
     const input = parseForm(request);
+    let id: string;
     try {
-      createPost(db, input);
+      id = createPost(db, input);
     } catch (error) {
       if (error instanceof PostValidationError) {
         reply.code(400);
@@ -143,7 +145,7 @@ export async function registerPostRoutes(
       }
       throw error;
     }
-    return reply.redirect('/posts?notice=created');
+    return reply.redirect(`/posts/${id}?notice=created`);
   });
 
   app.post('/api/posts/:id/autosave', async (request, reply) => {
@@ -204,7 +206,7 @@ export async function registerPostRoutes(
       }
       throw error;
     }
-    return reply.redirect('/posts?notice=saved');
+    return reply.redirect(`/posts/${id}?notice=saved`);
   });
 
   app.post('/posts/:id/delete', async (request, reply) => {
