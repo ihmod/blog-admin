@@ -1,4 +1,4 @@
-<%- include('../partials/header', { title: isNew ? '新建文章' : '编辑文章', user, csrfToken, vditor: true, wide: true }) %>
+<%- include('../partials/header', { title: isNew ? '新建文章' : '编辑文章', user, csrfToken, vditor: true, wide: true, editor: true }) %>
 <%- include('../partials/notice', { notice: undefined, error: typeof error !== 'undefined' ? error : undefined }) %>
 
 <form method="post" action="<%= isNew ? '/posts' : '/posts/' + post.id %>" id="post-form" class="editor-shell" data-status="<%= post.status %>">

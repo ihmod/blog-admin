@@ -34,7 +34,7 @@
   const vditor = new Vditor(container.id, {
     height: window.matchMedia('(max-width: 760px)').matches
       ? 420
-      : Math.max(520, window.innerHeight - 320),
+      : Math.max(420, window.innerHeight - 380),
     mode: 'sv',
     theme: 'classic',
     icon: 'ant',
