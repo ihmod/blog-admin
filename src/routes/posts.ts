@@ -216,7 +216,7 @@ export async function registerPostRoutes(
       if (error instanceof PostNotFoundError) return reply.callNotFound();
       throw error;
     }
-    return reply.redirect('/posts?status=trash&notice=deleted');
+    return reply.redirect('/posts?notice=deleted');
   });
 
   app.post('/posts/:id/restore', async (request, reply) => {
