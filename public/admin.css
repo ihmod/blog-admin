@@ -286,6 +286,60 @@ select {
 
 .container-wide { max-width: 1480px; }
 .container-editor { padding-top: 0.65rem; padding-bottom: 1.25rem; }
+.editor-page {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+}
+.editor-page .nav { flex: none; }
+.editor-page .container-editor {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+  padding-top: 0.65rem;
+  padding-bottom: 0.75rem;
+}
+.editor-page .container-editor .editor-shell {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+}
+.editor-page .container-editor .editor-bar { flex: none; }
+.editor-page .container-editor .editor-grid {
+  flex: 1;
+  min-height: 0;
+  align-items: stretch;
+}
+.editor-page .container-editor .editor-left,
+.editor-page .container-editor .editor-side {
+  position: static;
+  top: auto;
+  max-height: none;
+  min-height: 0;
+  overflow-y: auto;
+}
+.editor-page .container-editor .editor-canvas {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+.editor-page .container-editor .editor-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+.editor-page .container-editor #vditor {
+  flex: 1;
+  min-height: 0;
+  height: 100% !important;
+}
 
 /* Post editor workspace */
 .editor-shell {
@@ -907,6 +961,13 @@ select {
   }
   .editor-shell.side-collapsed .editor-grid { grid-template-columns: 1fr; }
   .editor-shell.left-collapsed .editor-grid { grid-template-columns: 1fr; }
+  .editor-page { display: block; height: auto; overflow: auto; }
+  .editor-page .container-editor { display: block; height: auto; min-height: 0; }
+  .editor-page .container-editor .editor-shell { display: block; }
+  .editor-page .container-editor .editor-grid { display: grid; height: auto; }
+  .editor-page .container-editor .editor-canvas,
+  .editor-page .container-editor .editor-body { display: block; overflow: visible; }
+  .editor-page .container-editor #vditor { height: auto !important; flex: none; }
 }
 
 @media (max-width: 1040px) {

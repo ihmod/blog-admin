@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="/static/vditor/dist/index.css">
 <% } %>
 </head>
-<body>
+<body<%= typeof editor !== 'undefined' && editor ? ' class="editor-page"' : '' %>>
 <% if (typeof user !== 'undefined' && user) { %>
 <nav class="nav">
   <a class="brand" href="/">iHMOD Admin</a>
