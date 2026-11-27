@@ -102,6 +102,35 @@
 
   applyViewMode('editor');
 
+  function setupDelete() {
+    const button = document.getElementById('delete-post');
+    if (!button) return;
+    button.addEventListener('click', async (event) => {
+      if (!postId) return;
+      event.preventDefault();
+      button.disabled = true;
+      try {
+        const res = await fetch('/posts/' + encodeURIComponent(postId) + '/delete', {
+          method: 'POST',
+          headers: {
+            'content-type': 'application/x-www-form-urlencoded',
+            'x-csrf-token': csrf,
+            'x-requested-with': 'fetch',
+            accept: 'application/json',
+          },
+          body: new URLSearchParams({ _csrf: csrf }).toString(),
+        });
+        if (!res.ok) throw new Error('delete failed');
+        showToast('已移入回收站');
+      } catch (error) {
+        showToast('删除失败');
+        button.disabled = false;
+      }
+    });
+  }
+
+  setupDelete();
+
   function setupPostFilter() {
     const filter = document.getElementById('post-filter');
     const categoryFilter = document.getElementById('post-category-filter');

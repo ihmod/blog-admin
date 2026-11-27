@@ -216,6 +216,10 @@ export async function registerPostRoutes(
       if (error instanceof PostNotFoundError) return reply.callNotFound();
       throw error;
     }
+    const wantsJson =
+      request.headers['x-requested-with'] === 'fetch' ||
+      (request.headers.accept ?? '').includes('application/json');
+    if (wantsJson) return reply.send({ deleted: true });
     return reply.redirect('/posts?notice=deleted');
   });
 
