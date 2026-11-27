@@ -32,7 +32,7 @@
     height: window.matchMedia('(max-width: 760px)').matches ? 420 : 600,
     mode: 'sv',
     theme: 'classic',
-    icon: 'material',
+    icon: 'ant',
     cdn: '/static/vditor',
     cache: { enable: false },
     value: input.value,

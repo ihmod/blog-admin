@@ -481,6 +481,23 @@ select {
 }
 .editor-canvas .vditor-sv { background: #fff; }
 
+.editor-canvas .vditor-toolbar__item .vditor-tooltipped {
+  color: #475467;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
+.editor-canvas .vditor-toolbar__item .vditor-tooltipped:hover {
+  color: #175cd3;
+  background: #f2f4f7;
+}
+.editor-canvas .vditor-toolbar__item svg {
+  fill: currentColor;
+  stroke: currentColor;
+  width: 15px;
+  height: 15px;
+}
+
 .editor-side {
   position: sticky;
   top: 80px;
