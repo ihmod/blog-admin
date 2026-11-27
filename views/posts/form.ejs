@@ -165,10 +165,8 @@
               <input type="checkbox" id="top_img_enabled" <%= post.topImg !== 'false' ? 'checked' : '' %>>
               <span class="switch-track"></span>
             </label>
-            <span class="switch-text">使用主题默认顶部图</span>
           </div>
           <input type="hidden" id="top_img" name="top_img" value="<%= post.topImg ?? 'false' %>">
-          <p class="field-hint">关闭后文章不显示顶部图。</p>
         </div>
 
         <div class="side-field">

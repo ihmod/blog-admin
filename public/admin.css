@@ -747,7 +747,6 @@ select {
 .switch input:checked + .switch-track { background: var(--accent); }
 .switch input:checked + .switch-track::after { transform: translateX(16px); }
 .switch input:focus-visible + .switch-track { outline: 2px solid var(--accent); outline-offset: 2px; }
-.switch-text { font-size: 0.8rem; color: var(--ink-soft); }
 .category-create { display: flex; gap: 0.35rem; margin-top: 0.15rem; }
 .category-create input {
   flex: 1;
