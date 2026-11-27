@@ -44,6 +44,22 @@ export async function registerCategoryRoutes(
     return reply.redirect('/categories?notice=created');
   });
 
+  app.post('/api/categories', async (request, reply) => {
+    const body = request.body as { name?: string } | undefined;
+    try {
+      const category = createCategory(db, body?.name ?? '');
+      return reply.send({ id: category.id, name: category.name });
+    } catch (error) {
+      if (error instanceof DuplicateCategoryError) {
+        return reply.code(409).send({ error: 'duplicate', message: '分类已存在' });
+      }
+      if (error instanceof Error) {
+        return reply.code(400).send({ error: 'invalid', message: error.message });
+      }
+      throw error;
+    }
+  });
+
   app.post('/categories/:id', async (request, reply) => {
     const { id } = request.params as { id: string };
     const categoryId = parseId(id);

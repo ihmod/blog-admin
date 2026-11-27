@@ -58,6 +58,24 @@ describe('category and tag routes', () => {
     expect(db.select().from(categories).where(eq(categories.id, category.id)).get()!.name).toBe('安全');
   });
 
+  it('creates a category through the editor API', async () => {
+    const { app, db, cookie, csrf } = await setup();
+    const res = await app.inject({
+      method: 'POST',
+      url: '/api/categories',
+      headers: {
+        cookie,
+        'content-type': 'application/x-www-form-urlencoded',
+        'x-csrf-token': csrf,
+      },
+      payload: `name=${encodeURIComponent('安全')}`,
+    });
+    expect(res.statusCode).toBe(200);
+    const body = res.json() as { id: number; name: string };
+    expect(body.name).toBe('安全');
+    expect(db.select().from(categories).where(eq(categories.id, body.id)).get()?.name).toBe('安全');
+  });
+
   it('creates a tag and blocks deleting it when used', async () => {
     const { app, db, cookie, csrf } = await setup();
     await app.inject({

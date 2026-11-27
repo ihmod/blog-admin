@@ -31,7 +31,8 @@ export function renderPostMarkdown(post: RenderPost, categoryName: string, tags:
   };
   if (tags.length > 0) data.tags = tags;
   data.categories = categoryName;
-  data.top_img = post.topImg === 'false' ? false : post.topImg;
+  if (post.topImg === 'false') data.top_img = false;
+  else if (post.topImg !== 'true') data.top_img = post.topImg;
   if (post.description) data.description = post.description;
   data.abbrlink = post.abbrlink;
 

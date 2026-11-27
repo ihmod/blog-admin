@@ -122,6 +122,11 @@
               <option value="<%= category.id %>" <%= post.categoryId === category.id ? 'selected' : '' %>><%= category.name %></option>
             <% } %>
           </select>
+          <div class="category-create">
+            <input id="new-category-name" type="text" placeholder="新建分类名称" maxlength="50" autocomplete="off" aria-label="新建分类名称">
+            <button type="button" class="category-create-btn" id="create-category">新建</button>
+          </div>
+          <p class="field-hint" id="category-create-error" hidden></p>
         </div>
 
         <div class="side-field">
@@ -154,8 +159,16 @@
         </div>
 
         <div class="side-field">
-          <label for="top_img">顶部图</label>
-          <input id="top_img" name="top_img" value="<%= post.topImg ?? 'false' %>" placeholder="false 或图片 URL">
+          <label for="top_img_enabled">顶部图</label>
+          <div class="switch-row">
+            <label class="switch">
+              <input type="checkbox" id="top_img_enabled" <%= post.topImg !== 'false' ? 'checked' : '' %>>
+              <span class="switch-track"></span>
+            </label>
+            <span class="switch-text">使用主题默认顶部图</span>
+          </div>
+          <input type="hidden" id="top_img" name="top_img" value="<%= post.topImg ?? 'false' %>">
+          <p class="field-hint">关闭后文章不显示顶部图。</p>
         </div>
 
         <div class="side-field">

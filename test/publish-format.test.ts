@@ -67,4 +67,21 @@ describe('publish-format', () => {
     expect(markdown).toMatch(/top_img: ['"]?https:\/\/example\.com\/a\.png['"]?/);
     expect(markdown).toContain("abbrlink: '12345678'");
   });
+
+  it('omits top_img when the theme default is used', () => {
+    const markdown = renderPostMarkdown(
+      {
+        title: 'T',
+        contentMd: 'body',
+        postDate: '2026-11-12 00:00:00',
+        updatedAt: '2026-11-12 00:00:00',
+        topImg: 'true',
+        description: null,
+        abbrlink: '12345678',
+      },
+      '未分类',
+      [],
+    );
+    expect(markdown).not.toContain('top_img:');
+  });
 });

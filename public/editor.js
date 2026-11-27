@@ -11,6 +11,8 @@
   setupViewControls();
   setupTabs();
   setupPostFilter();
+  setupTopImg();
+  setupCategoryCreate();
 
   function countWords(text) {
     const cjk = (text.match(/[一-鿿]/g) || []).length;
@@ -463,6 +465,77 @@
       if (!dirty) return;
       event.preventDefault();
       event.returnValue = '';
+    });
+  }
+
+  function setupTopImg() {
+    const toggle = document.getElementById('top_img_enabled');
+    const hidden = document.getElementById('top_img');
+    if (!toggle || !hidden) return;
+    const custom = hidden.value && hidden.value !== 'false' && hidden.value !== 'true' ? hidden.value : '';
+    toggle.addEventListener('change', () => {
+      hidden.value = toggle.checked ? custom || 'true' : 'false';
+    });
+  }
+
+  function setupCategoryCreate() {
+    const select = document.getElementById('category_id');
+    const input = document.getElementById('new-category-name');
+    const button = document.getElementById('create-category');
+    const error = document.getElementById('category-create-error');
+    if (!select || !input || !button) return;
+    const csrfToken =
+      (container && container.dataset.csrf) ||
+      document.querySelector('input[name=_csrf]')?.value ||
+      '';
+
+    async function create() {
+      const name = input.value.trim();
+      if (!name) return;
+      button.disabled = true;
+      if (error) {
+        error.hidden = true;
+        error.textContent = '';
+      }
+      try {
+        const response = await fetch('/api/categories', {
+          method: 'POST',
+          headers: {
+            'content-type': 'application/x-www-form-urlencoded',
+            'x-csrf-token': csrfToken,
+          },
+          body: new URLSearchParams({ name }).toString(),
+        });
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(data.message || '创建分类失败');
+        let option = Array.from(select.options).find((item) => item.value === String(data.id));
+        if (!option) {
+          option = document.createElement('option');
+          option.value = String(data.id);
+          select.appendChild(option);
+        }
+        option.textContent = data.name;
+        select.value = String(data.id);
+        select.dispatchEvent(new Event('change', { bubbles: true }));
+        input.value = '';
+      } catch (err) {
+        if (error) {
+          error.hidden = false;
+          error.textContent = err instanceof Error ? err.message : '创建分类失败';
+        }
+      } finally {
+        button.disabled = false;
+      }
+    }
+
+    button.addEventListener('click', () => {
+      void create();
+    });
+    input.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        void create();
+      }
     });
   }
 

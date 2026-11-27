@@ -69,8 +69,9 @@ function tagsFrom(data: Record<string, unknown>): string[] {
 
 function topImgFrom(data: Record<string, unknown>): string {
   if (data.top_img === false) return 'false';
+  if (data.top_img === true) return 'true';
   if (typeof data.top_img === 'string' && data.top_img.trim()) return data.top_img.trim();
-  return 'false';
+  return 'true';
 }
 
 function ensureCategory(db: Db, name: string): number {
