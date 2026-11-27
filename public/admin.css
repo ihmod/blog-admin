@@ -462,8 +462,7 @@ select {
   height: 100%;
   margin-left: 0.35rem;
   border: 1px dashed #cfd4dc;
-  border-bottom: 0;
-  border-radius: 9px 9px 0 0;
+  border-radius: 9px;
   background: transparent;
   color: #475467;
   font-size: 18px;
