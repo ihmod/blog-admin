@@ -35,6 +35,35 @@
   </div>
 
   <div class="editor-grid">
+    <aside class="editor-left">
+      <section class="side-card">
+        <div class="side-head">
+          <h2 class="side-title">文章</h2>
+          <a class="side-link" href="/posts">全部</a>
+        </div>
+        <input id="post-filter" class="side-search" type="search" placeholder="搜索文章..." autocomplete="off">
+        <ul class="post-list" id="post-list">
+          <% for (const item of recentPosts) { %>
+            <li data-title="<%= item.title %>">
+              <a class="post-link <%= !isNew && item.id === post.id ? 'active' : '' %>" href="/posts/<%= item.id %>">
+                <span class="post-title"><%= item.title %></span>
+                <span class="post-dot <%= item.status %>"></span>
+              </a>
+            </li>
+          <% } %>
+        </ul>
+        <p class="side-hint">Ctrl/⌘ + 点击可在新标签打开</p>
+      </section>
+
+      <section class="side-card">
+        <div class="side-head">
+          <h2 class="side-title">目录</h2>
+          <span class="toc-count" id="toc-count"></span>
+        </div>
+        <ol class="toc-list" id="toc-list"></ol>
+      </section>
+    </aside>
+
     <div class="editor-canvas">
       <div class="doc-tab">
         <span class="doc-status <%= post.status %>"><span class="doc-dot"></span><%= post.status === 'published' ? '已发布' : '草稿' %></span>

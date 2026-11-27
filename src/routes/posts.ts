@@ -97,6 +97,7 @@ async function renderForm(
     user: request.user,
     csrfToken: request.csrfToken,
     categories: listCategories(db),
+    recentPosts: listPosts(db, { status: 'all', page: 1, pageSize: 50 }).items,
     ...data,
   });
 }
