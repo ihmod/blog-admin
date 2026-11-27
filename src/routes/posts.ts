@@ -98,6 +98,7 @@ async function renderForm(
     csrfToken: request.csrfToken,
     categories: listCategories(db),
     recentPosts: listPosts(db, { status: 'all', page: 1, pageSize: 50 }).items,
+    trashCount: listPosts(db, { status: 'trash', page: 1, pageSize: 1 }).total,
     ...data,
   });
 }
@@ -212,7 +213,7 @@ export async function registerPostRoutes(
       if (error instanceof PostNotFoundError) return reply.callNotFound();
       throw error;
     }
-    return reply.redirect('/posts?notice=deleted');
+    return reply.redirect('/posts?status=trash&notice=deleted');
   });
 
   app.post('/posts/:id/restore', async (request, reply) => {

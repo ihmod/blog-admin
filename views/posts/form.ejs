@@ -54,6 +54,13 @@
             </li>
           <% } %>
         </ul>
+        <a class="post-folder" href="/posts?status=trash">
+          <svg viewBox="0 0 20 20" width="14" height="14" aria-hidden="true">
+            <path d="M2.5 5.5h5l1.5 2h8.5v7.5a1.5 1.5 0 0 1-1.5 1.5h-12a1.5 1.5 0 0 1-1.5-1.5z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+          </svg>
+          <span class="post-folder-name">回收站</span>
+          <% if (trashCount > 0) { %><span class="post-folder-count"><%= trashCount %></span><% } %>
+        </a>
         <p class="side-hint">Ctrl/⌘ + 点击可在新标签打开</p>
       </section>
     </aside>
@@ -141,6 +148,12 @@
           <label for="description">摘要</label>
           <textarea id="description" name="description" rows="3" placeholder="一句话介绍这篇文章"><%= post.description ?? '' %></textarea>
         </div>
+
+        <% if (!isNew) { %>
+          <div class="side-divider"></div>
+          <p class="side-hint">删除后进入回收站，可在“回收站”文件夹恢复。</p>
+          <button class="btn-danger-ghost" type="submit" form="delete-form">删除文章</button>
+        <% } %>
       </section>
 
     </aside>
@@ -152,6 +165,12 @@
     </button>
   </div>
 </form>
+
+<% if (!isNew) { %>
+  <form id="delete-form" method="post" action="/posts/<%= post.id %>/delete" hidden>
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+  </form>
+<% } %>
 
 <script src="/static/vditor/dist/index.min.js"></script>
 <script src="/static/editor.js?<%= Date.now() %>"></script>
