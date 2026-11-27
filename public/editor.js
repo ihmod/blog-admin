@@ -169,7 +169,7 @@
   }
 
   async function save() {
-    if (!postId || saving) return;
+    if (!postId || saving) return false;
     const value = vditor.getValue();
     input.value = value;
     saving = true;
@@ -190,11 +190,38 @@
       if (data.saved) {
         setStatus('已自动保存 ' + new Date().toLocaleTimeString());
       }
+      return true;
     } catch (error) {
       setStatus('自动保存失败');
+      return false;
     } finally {
       saving = false;
     }
+  }
+
+  function showToast(message) {
+    const toast = document.createElement('p');
+    toast.className = 'notice';
+    toast.setAttribute('role', 'status');
+    toast.setAttribute('aria-live', 'polite');
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    setTimeout(() => {
+      toast.classList.add('is-hiding');
+      setTimeout(() => toast.remove(), 280);
+    }, 2200);
+  }
+
+  async function saveBeforeNavigate(href) {
+    if (!dirty || !postId) {
+      window.location.href = href;
+      return;
+    }
+    const saved = await save();
+    showToast(saved ? '已自动保存，正在切换…' : '自动保存失败，请手动保存');
+    setTimeout(() => {
+      window.location.href = href;
+    }, saved ? 500 : 1000);
   }
 
   function schedule() {
@@ -384,6 +411,11 @@
         });
         item.append(link, close);
         bar.appendChild(item);
+        link.addEventListener('click', (event) => {
+          if (!dirty || !postId) return;
+          event.preventDefault();
+          void saveBeforeNavigate(link.href);
+        });
       });
       const add = document.createElement('a');
       add.className = 'editor-tab-add';
@@ -391,6 +423,11 @@
       add.setAttribute('aria-label', '新建文章');
       add.title = '新建文章';
       add.textContent = '+';
+      add.addEventListener('click', (event) => {
+        if (!dirty || !postId) return;
+        event.preventDefault();
+        void saveBeforeNavigate(add.href);
+      });
       bar.appendChild(add);
       const active = bar.querySelector('.editor-tab.active');
       if (active) active.scrollIntoView({ block: 'nearest', inline: 'nearest' });
@@ -441,6 +478,19 @@
           saveTabs();
         }
       });
+      link.addEventListener('click', (event) => {
+        if (!dirty || !postId) return;
+        event.preventDefault();
+        void saveBeforeNavigate(link.href);
+      });
+    });
+
+    document.querySelectorAll('.editor-back, .editor-bar-actions .btn-ghost').forEach((link) => {
+      link.addEventListener('click', (event) => {
+        if (!dirty || !postId) return;
+        event.preventDefault();
+        void saveBeforeNavigate(link.href);
+      });
     });
 
     document.querySelectorAll('input[name=status]').forEach((radio) => {
@@ -468,11 +518,24 @@
         dirty = false;
       });
     }
-    window.addEventListener('beforeunload', (event) => {
-      if (!dirty) return;
-      event.preventDefault();
-      event.returnValue = '';
-    });
+    const saveOnUnload = () => {
+      if (!dirty || !postId) return;
+      const value = vditor.getValue();
+      const body = new URLSearchParams();
+      body.set('title', titleInput ? titleInput.value : '');
+      body.set('content_md', value);
+      fetch('/api/posts/' + encodeURIComponent(postId) + '/autosave', {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/x-www-form-urlencoded',
+          'x-csrf-token': csrf,
+        },
+        body: body.toString(),
+        keepalive: true,
+      }).catch(() => {});
+    };
+    window.addEventListener('beforeunload', saveOnUnload);
+    window.addEventListener('pagehide', saveOnUnload);
   }
 
   function setupTopImg() {
