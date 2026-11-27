@@ -420,6 +420,13 @@
         item.append(link, close);
         bar.appendChild(item);
       });
+      const add = document.createElement('a');
+      add.className = 'editor-tab-add';
+      add.href = '/posts/new';
+      add.setAttribute('aria-label', '新建文章');
+      add.title = '新建文章';
+      add.textContent = '+';
+      bar.appendChild(add);
       const active = bar.querySelector('.editor-tab.active');
       if (active) active.scrollIntoView({ block: 'nearest', inline: 'nearest' });
     }
