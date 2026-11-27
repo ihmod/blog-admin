@@ -302,38 +302,45 @@ select {
 
 .doc-tabs {
   display: flex;
-  align-items: flex-end;
-  gap: 4px;
+  align-items: stretch;
+  gap: 0;
+  height: 42px;
   overflow-x: auto;
+  overflow-y: hidden;
   margin: 0;
-  padding: 0.55rem 1.2rem 0;
-  background: #f1f5fb;
-  border-bottom: 1px solid var(--line);
+  padding: 0;
+  background: #e9edf3;
+  border-bottom: 1px solid #d7dee8;
   border-radius: 13px 13px 0 0;
   scrollbar-width: thin;
 }
 .editor-tab {
   display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
-  flex: none;
-  max-width: 260px;
+  gap: 0.35rem;
+  flex: 0 1 220px;
+  min-width: 96px;
+  height: 100%;
+  padding: 0 0.35rem 0 0.55rem;
   border: 1px solid transparent;
   border-bottom: 0;
   border-radius: 9px 9px 0 0;
   background: transparent;
-  color: var(--muted);
+  color: #3f4c63;
   font-family: inherit;
   font-size: 12px;
   transition: background 0.15s ease, color 0.15s ease;
 }
-.editor-tab:hover { background: rgba(255, 255, 255, 0.55); color: var(--ink); }
+.editor-tab + .editor-tab { margin-left: -1px; }
+.editor-tab:hover { background: #f5f7fa; color: #101828; }
 .editor-tab.active {
+  position: relative;
+  z-index: 1;
   margin-bottom: -1px;
   background: var(--paper);
-  border-color: var(--line);
+  border-color: #d7dee8;
   border-top: 2px solid var(--accent);
-  color: var(--ink);
+  color: #101828;
 }
 .editor-tab-dot {
   width: 6px;
@@ -344,12 +351,16 @@ select {
 }
 .editor-tab-dot.published { background: #12b76a; }
 .editor-tab-link {
-  padding: 0.42rem 0.55rem;
+  display: flex;
+  align-items: center;
+  flex: 1;
+  height: 100%;
+  min-width: 0;
+  padding: 0 0.3rem;
   color: inherit;
   text-decoration: none;
   font-size: inherit;
   font-weight: 500;
-  max-width: 200px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -754,7 +765,7 @@ select {
   .editor-bar-actions { margin-left: auto; }
   .editor-body { padding: 0.95rem 1rem 1.1rem; }
   .title-input { font-size: 1.55rem; }
-  .doc-tabs { padding-left: 0.9rem; }
+  .doc-tabs { padding-left: 0; }
   .editor-left,
   .editor-side { display: flex; }
 }
