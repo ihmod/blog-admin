@@ -86,6 +86,8 @@ export async function buildApp({ db, sqlite, config }: AppDeps): Promise<Fastify
     return { ok: true };
   });
 
+  app.get('/favicon.ico', async (_request, reply) => reply.redirect('/static/favicon.svg'));
+
   await registerAuthRoutes(app, { db, config });
   await registerDashboardRoutes(app, { db });
   await registerCategoryRoutes(app, { db });
