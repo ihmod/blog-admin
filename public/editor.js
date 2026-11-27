@@ -8,7 +8,6 @@
   let dirty = false;
 
   setupTags();
-  setupStatusPreview();
   setupViewControls();
   setupTabs();
 
@@ -210,22 +209,10 @@
     });
   }
 
-  function setupStatusPreview() {
-    const doc = document.querySelector('.doc-status');
-    if (!doc) return;
-    document.querySelectorAll('input[name=status]').forEach((radio) => {
-      radio.addEventListener('change', () => {
-        if (!radio.checked) return;
-        const published = radio.value === 'published';
-        doc.className = 'doc-status ' + (published ? 'published' : 'draft');
-        doc.innerHTML = '<span class="doc-dot"></span>' + (published ? '已发布' : '草稿');
-      });
-    });
-  }
-
   function setupTabs() {
     const bar = document.getElementById('editor-tabs');
     const pageId = container ? container.dataset.postId || 'new' : 'new';
+    const currentStatus = form && form.dataset.status === 'published' ? 'published' : 'draft';
     const titleField = document.querySelector('[name=title]');
     if (!bar) return;
 
@@ -270,6 +257,9 @@
       tabs.forEach((tab) => {
         const item = document.createElement('div');
         item.className = 'editor-tab' + (tab.id === pageId ? ' active' : '');
+        const dot = document.createElement('span');
+        dot.className = 'editor-tab-dot' + (tab.status === 'published' ? ' published' : '');
+        item.appendChild(dot);
         const link = document.createElement('a');
         link.className = 'editor-tab-link';
         link.href = tabHref(tab.id);
@@ -301,8 +291,12 @@
           ? '新建文章'
           : '未命名';
     const existing = tabs.find((tab) => tab.id === pageId);
-    if (existing) existing.title = currentTitle;
-    else tabs.unshift({ id: pageId, title: currentTitle });
+    if (existing) {
+      existing.title = currentTitle;
+      existing.status = currentStatus;
+    } else {
+      tabs.unshift({ id: pageId, title: currentTitle, status: currentStatus });
+    }
     tabs = tabs.slice(0, 12);
     saveTabs();
     render();
@@ -325,11 +319,25 @@
         if (!match) return;
         const id = match[1];
         const title = (link.querySelector('.post-title')?.textContent || '未命名').trim();
+        const status = link.querySelector('.post-dot')?.classList.contains('published')
+          ? 'published'
+          : 'draft';
         if (!tabs.some((tab) => tab.id === id)) {
-          tabs.unshift({ id, title });
+          tabs.unshift({ id, title, status });
           tabs = tabs.slice(0, 12);
           saveTabs();
         }
+      });
+    });
+
+    document.querySelectorAll('input[name=status]').forEach((radio) => {
+      radio.addEventListener('change', () => {
+        if (!radio.checked) return;
+        const active = tabs.find((tab) => tab.id === pageId);
+        if (!active) return;
+        active.status = radio.value === 'published' ? 'published' : 'draft';
+        saveTabs();
+        render();
       });
     });
 

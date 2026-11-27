@@ -1,11 +1,10 @@
 <%- include('../partials/header', { title: isNew ? '新建文章' : '编辑文章', user, csrfToken, vditor: true, wide: true }) %>
 <%- include('../partials/notice', { notice: undefined, error: typeof error !== 'undefined' ? error : undefined }) %>
 
-<form method="post" action="<%= isNew ? '/posts' : '/posts/' + post.id %>" id="post-form" class="editor-shell">
+<form method="post" action="<%= isNew ? '/posts' : '/posts/' + post.id %>" id="post-form" class="editor-shell" data-status="<%= post.status %>">
   <input type="hidden" name="_csrf" value="<%= csrfToken %>">
 
   <div class="editor-bar">
-    <div class="editor-tabs" id="editor-tabs" role="tablist" aria-label="打开的文章"></div>
     <div class="editor-bar-main">
     <a class="editor-back" href="/posts">← 文章</a>
     <div class="editor-bar-center">
@@ -60,10 +59,7 @@
     </aside>
 
     <div class="editor-canvas">
-      <div class="doc-tab">
-        <span class="doc-status <%= post.status %>"><span class="doc-dot"></span><%= post.status === 'published' ? '已发布' : '草稿' %></span>
-        <span class="doc-slug"><%= isNew ? 'untitled' : (post.slug || 'untitled') %></span>
-      </div>
+      <div class="doc-tabs" id="editor-tabs" role="tablist" aria-label="打开的文章"></div>
 
       <div class="editor-body">
         <label class="title-label" for="title">标题</label>
