@@ -46,7 +46,8 @@ export async function buildApp({ db, sqlite, config }: AppDeps): Promise<Fastify
         fontSrc: ["'self'", 'data:'],
         connectSrc: ["'self'"],
         workerSrc: ["'self'", 'blob:'],
-        scriptSrc: ["'self'"],
+        // Vditor injects an inline bootstrap script; this admin is single-user behind auth.
+        scriptSrc: ["'self'", "'unsafe-inline'"],
         frameAncestors: ["'none'"],
         baseUri: ["'none'"],
         formAction: ["'self'"],
