@@ -107,6 +107,36 @@
     const list = document.getElementById('post-list');
     if (!list) return;
 
+    const allTagOptions = tagFilter
+      ? Array.from(tagFilter.options).map((option) => ({
+          value: option.value,
+          label: option.textContent || option.value,
+        }))
+      : [];
+
+    function updateTagOptions() {
+      if (!tagFilter) return;
+      const category = categoryFilter?.value || '';
+      const allowed = new Set();
+      list.querySelectorAll('li').forEach((item) => {
+        if (category && (item.dataset.category || '') !== category) return;
+        (item.dataset.tags || '')
+          .split('|')
+          .filter(Boolean)
+          .forEach((tag) => allowed.add(tag));
+      });
+      const current = tagFilter.value;
+      tagFilter.innerHTML = '';
+      allTagOptions.forEach((option) => {
+        if (option.value && !allowed.has(option.value)) return;
+        const element = document.createElement('option');
+        element.value = option.value;
+        element.textContent = option.label;
+        tagFilter.appendChild(element);
+      });
+      tagFilter.value = current && allowed.has(current) ? current : '';
+    }
+
     function apply() {
       const query = (filter?.value || '').trim().toLowerCase();
       const category = categoryFilter?.value || '';
@@ -123,8 +153,12 @@
     }
 
     filter?.addEventListener('input', apply);
-    categoryFilter?.addEventListener('change', apply);
+    categoryFilter?.addEventListener('change', () => {
+      updateTagOptions();
+      apply();
+    });
     tagFilter?.addEventListener('change', apply);
+    updateTagOptions();
     apply();
   }
 
@@ -390,12 +424,13 @@
       });
     });
 
+    const ignoredIds = new Set(['post-filter', 'post-category-filter', 'post-tag-filter']);
     document.addEventListener('input', (event) => {
-      if (!form || !form.contains(event.target) || event.target.id === 'post-filter') return;
+      if (!form || !form.contains(event.target) || ignoredIds.has(event.target.id)) return;
       dirty = true;
     });
     document.addEventListener('change', (event) => {
-      if (!form || !form.contains(event.target) || event.target.id === 'post-filter') return;
+      if (!form || !form.contains(event.target) || ignoredIds.has(event.target.id)) return;
       dirty = true;
     });
     if (form) {
