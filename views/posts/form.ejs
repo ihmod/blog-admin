@@ -41,7 +41,11 @@
       <section class="side-card">
         <div class="side-head">
           <h2 class="side-title">文章</h2>
-          <a class="side-link" href="/posts">全部</a>
+          <button type="button" class="side-toggle" id="toggle-left" aria-expanded="true" aria-label="收起文章列表" title="收起文章列表">
+            <svg viewBox="0 0 20 20" width="14" height="14" aria-hidden="true">
+              <path d="M12.5 4.5l-5 5 5 5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
         </div>
         <input id="post-filter" class="side-search" type="search" placeholder="搜索文章..." autocomplete="off">
         <div class="post-filters">
@@ -69,16 +73,15 @@
             </li>
           <% } %>
         </ul>
-        <a class="post-folder" href="/posts?status=trash">
-          <svg viewBox="0 0 20 20" width="14" height="14" aria-hidden="true">
-            <path d="M2.5 5.5h5l1.5 2h8.5v7.5a1.5 1.5 0 0 1-1.5 1.5h-12a1.5 1.5 0 0 1-1.5-1.5z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
-          </svg>
-          <span class="post-folder-name">回收站</span>
-          <% if (trashCount > 0) { %><span class="post-folder-count"><%= trashCount %></span><% } %>
-        </a>
         <p class="side-hint">Ctrl/⌘ + 点击可在新标签打开</p>
       </section>
     </aside>
+
+    <button type="button" class="left-reopen" id="toggle-left-open" aria-label="展开文章列表" title="展开文章列表">
+      <svg viewBox="0 0 20 20" width="14" height="14" aria-hidden="true">
+        <path d="M7.5 4.5l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
 
     <div class="editor-canvas">
       <div class="doc-tabs" id="editor-tabs" role="tablist" aria-label="打开的文章"></div>

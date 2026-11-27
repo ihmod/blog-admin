@@ -100,7 +100,6 @@ async function renderForm(
     categories: listCategories(db),
     tags: listTags(db),
     recentPosts: listPosts(db, { status: 'all', page: 1, pageSize: 50 }).items,
-    trashCount: listPosts(db, { status: 'trash', page: 1, pageSize: 1 }).total,
     ...data,
   });
 }

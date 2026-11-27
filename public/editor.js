@@ -214,6 +214,8 @@
     const shell = document.getElementById('post-form');
     const sideButton = document.getElementById('toggle-side');
     const reopenButton = document.getElementById('toggle-side-open');
+    const leftButton = document.getElementById('toggle-left');
+    const leftReopenButton = document.getElementById('toggle-left-open');
     const fullscreenButton = document.getElementById('toggle-fullscreen');
     if (!shell) return;
 
@@ -234,6 +236,25 @@
 
     if (reopenButton) {
       reopenButton.addEventListener('click', () => setSideCollapsed(false));
+    }
+
+    function setLeftCollapsed(collapsed) {
+      shell.classList.toggle('left-collapsed', collapsed);
+      if (leftButton) {
+        leftButton.setAttribute('aria-expanded', String(!collapsed));
+        leftButton.setAttribute('aria-label', collapsed ? '展开文章列表' : '收起文章列表');
+        leftButton.title = collapsed ? '展开文章列表' : '收起文章列表';
+      }
+    }
+
+    if (leftButton) {
+      leftButton.addEventListener('click', () => {
+        setLeftCollapsed(!shell.classList.contains('left-collapsed'));
+      });
+    }
+
+    if (leftReopenButton) {
+      leftReopenButton.addEventListener('click', () => setLeftCollapsed(false));
     }
 
     function setFullscreenButton(on) {
