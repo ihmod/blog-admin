@@ -505,6 +505,15 @@ select {
   font-size: 11.5px;
   color: var(--muted);
 }
+.editor-meta-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin: 0 0 0.9rem;
+}
+.editor-meta-row .editor-meta-line { margin: 0; }
 .mono { font-family: var(--mono); font-size: 11.5px; }
 .dot-sep { color: #d0d5dd; }
 
