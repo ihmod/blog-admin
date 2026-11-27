@@ -1,9 +1,9 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { eq } from 'drizzle-orm';
+import { desc, eq } from 'drizzle-orm';
 import { simpleGit, type SimpleGit } from 'simple-git';
 import type { Db } from '../db/client';
-import { publishState } from '../db/schema';
+import { publishRuns, publishState, type PublishRun } from '../db/schema';
 import { nowStamp } from '../lib/dates';
 import { isManagedPath } from '../lib/publish-format';
 import { exportContent } from './exporter';
@@ -73,7 +73,19 @@ export function recoverPublishState(db: Db): void {
   const state = getPublishState(db);
   if (state.status === 'running') {
     setState(db, 'error', 'publish was interrupted; check the repo and retry');
+    db.update(publishRuns)
+      .set({
+        status: 'error',
+        message: 'publish was interrupted; check the repo and retry',
+        finishedAt: nowStamp(),
+      })
+      .where(eq(publishRuns.status, 'running'))
+      .run();
   }
+}
+
+export function listPublishRuns(db: Db, limit = 20): PublishRun[] {
+  return db.select().from(publishRuns).orderBy(desc(publishRuns.id)).limit(limit).all();
 }
 
 async function openRepo(options: PublishOptions): Promise<SimpleGit> {
@@ -107,9 +119,46 @@ async function assertCleanOutsideManaged(git: SimpleGit): Promise<void> {
 }
 
 async function runPublish(db: Db, options: PublishOptions): Promise<PublishReport> {
+  const run = db
+    .insert(publishRuns)
+    .values({ status: 'running', startedAt: nowStamp() })
+    .returning({ id: publishRuns.id })
+    .get();
+  const runId = run.id;
+  const logLines: string[] = [];
+  const log = (message: string) => {
+    logLines.push(`[${new Date().toLocaleTimeString()}] ${message}`);
+    db.update(publishRuns)
+      .set({ log: logLines.join('\n') })
+      .where(eq(publishRuns.id, runId))
+      .run();
+  };
+  const finish = (
+    status: 'success' | 'error',
+    extra: { message?: string; commit?: string; posts?: number; files?: number; pushed?: boolean },
+  ) => {
+    db.update(publishRuns)
+      .set({
+        status,
+        message: extra.message ?? null,
+        commitSha: extra.commit ?? null,
+        posts: extra.posts ?? 0,
+        files: extra.files ?? 0,
+        pushed: extra.pushed ? 1 : 0,
+        finishedAt: nowStamp(),
+        log: logLines.join('\n'),
+      })
+      .where(eq(publishRuns.id, runId))
+      .run();
+  };
+
   setState(db, 'running');
+  log('开始发布');
+  log(`仓库: ${options.repoUrl} (分支 ${options.branch})`);
   try {
+    log('准备本地仓库…');
     const git = await openRepo(options);
+    log('检查工作区…');
     await assertCleanOutsideManaged(git);
 
     const exported = exportContent(db, {
@@ -117,20 +166,27 @@ async function runPublish(db: Db, options: PublishOptions): Promise<PublishRepor
       uploadsDir: options.uploadsDir,
       manifestPath: options.manifestPath,
     });
+    log(`导出完成: ${exported.posts} 篇文章, ${exported.files} 个文件`);
 
     fs.mkdirSync(path.join(options.repoDir, 'source/_posts'), { recursive: true });
     fs.mkdirSync(path.join(options.repoDir, 'source/img/uploads'), { recursive: true });
     await git.add(['-A', '--', 'source/_posts', 'source/img/uploads']);
+    log('已暂存 source/_posts 和 source/img/uploads');
     const status = await git.status();
     if (status.staged.length > 0) {
       await git.commit(`chore(publish): sync ${exported.posts} posts`);
+      log(`已提交 ${status.staged.length} 个文件变更`);
+    } else {
+      log('没有需要提交的变更');
     }
 
     await git.fetch('origin', options.branch);
+    log(`已 fetch origin/${options.branch}`);
     const behind = Number(
       (await git.raw(['rev-list', '--count', `HEAD..origin/${options.branch}`])).trim(),
     );
     if (behind > 0) {
+      log(`本地落后 ${behind} 个提交，执行 rebase…`);
       try {
         await git.rebase([`origin/${options.branch}`]);
       } catch (error) {
@@ -143,14 +199,28 @@ async function runPublish(db: Db, options: PublishOptions): Promise<PublishRepor
           `rebase conflict: ${error instanceof Error ? error.message : String(error)}`,
         );
       }
+      log('rebase 完成');
     }
 
     const ahead = Number(
       (await git.raw(['rev-list', '--count', `origin/${options.branch}..HEAD`])).trim(),
     );
-    if (ahead > 0) await git.push('origin', options.branch);
+    if (ahead > 0) {
+      log(`推送 ${ahead} 个提交到 origin/${options.branch}…`);
+      await git.push('origin', options.branch);
+      log('推送成功');
+    } else {
+      log('没有新的提交需要推送');
+    }
 
     const commit = (await git.revparse(['HEAD'])).trim();
+    log(`完成: ${commit}`);
+    finish('success', {
+      commit,
+      posts: exported.posts,
+      files: exported.files,
+      pushed: ahead > 0,
+    });
     setState(db, 'success', null, commit);
     return {
       posts: exported.posts,
@@ -159,7 +229,10 @@ async function runPublish(db: Db, options: PublishOptions): Promise<PublishRepor
       pushed: ahead > 0,
     };
   } catch (error) {
-    setState(db, 'error', error instanceof Error ? error.message : String(error));
+    const message = error instanceof Error ? error.message : String(error);
+    log(`失败: ${message}`);
+    finish('error', { message });
+    setState(db, 'error', message);
     throw error;
   }
 }

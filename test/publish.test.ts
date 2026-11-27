@@ -8,7 +8,12 @@ import { createDb } from '../src/db/client';
 import { applyMigrations } from '../src/db/migrate';
 import { publishState } from '../src/db/schema';
 import { createPost, unpublishPost, updatePost } from '../src/lib/posts';
-import { getPublishState, publish, recoverPublishState } from '../src/services/publisher';
+import {
+  getPublishState,
+  listPublishRuns,
+  publish,
+  recoverPublishState,
+} from '../src/services/publisher';
 
 const cleanups: Array<() => void> = [];
 afterEach(() => {
@@ -98,6 +103,12 @@ describe('publish', () => {
     unpublishPost(s.db, id);
     const fourth = await publish(s.db, options(s));
     expect(fourth.pushed).toBe(true);
+
+    const runs = listPublishRuns(s.db);
+    expect(runs.length).toBe(4);
+    expect(runs[0].status).toBe('success');
+    expect(runs[0].commitSha).toBe(fourth.commit);
+    expect(runs[0].log).toContain('导出完成');
   });
 
   it('aborts on uncommitted changes outside managed paths', async () => {
@@ -108,6 +119,10 @@ describe('publish', () => {
     fs.writeFileSync(path.join(s.repoDir, '_config.yml'), 'title: dirty\n');
     await expect(publish(s.db, options(s))).rejects.toThrow(/uncommitted changes/);
     expect(getPublishState(s.db).status).toBe('error');
+
+    const runs = listPublishRuns(s.db);
+    expect(runs[0].status).toBe('error');
+    expect(runs[0].log).toContain('失败');
   });
 
   it('recovers an interrupted running state', () => {

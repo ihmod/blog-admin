@@ -109,3 +109,21 @@ export const publishState = sqliteTable('publish_state', {
   startedAt: text('started_at'),
   finishedAt: text('finished_at'),
 });
+
+export const publishRuns = sqliteTable('publish_runs', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  status: text('status')
+    .$type<'running' | 'success' | 'error'>()
+    .notNull()
+    .default('running'),
+  message: text('message'),
+  commitSha: text('commit_sha'),
+  posts: integer('posts').notNull().default(0),
+  files: integer('files').notNull().default(0),
+  pushed: integer('pushed').notNull().default(0),
+  startedAt: text('started_at').notNull(),
+  finishedAt: text('finished_at'),
+  log: text('log').notNull().default(''),
+});
+
+export type PublishRun = typeof publishRuns.$inferSelect;

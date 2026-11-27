@@ -37,6 +37,7 @@ describe('migrations', () => {
         'post_tags',
         'media',
         'publish_state',
+        'publish_runs',
       ]),
     );
 
@@ -56,6 +57,6 @@ describe('migrations', () => {
     applyMigrations(sqlite, path.resolve(process.cwd(), 'migrations'));
 
     const count = sqlite.prepare('SELECT COUNT(*) AS n FROM _migrations').get() as any;
-    expect(count.n).toBe(1);
+    expect(count.n).toBe(2);
   });
 });

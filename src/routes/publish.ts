@@ -4,6 +4,7 @@ import type { Db } from '../db/client';
 import {
   PublishBusyError,
   getPublishState,
+  listPublishRuns,
   publish,
   type PublishOptions,
 } from '../services/publisher';
@@ -37,6 +38,7 @@ export async function registerPublishRoutes(
       user: request.user,
       csrfToken: request.csrfToken,
       state: getPublishState(db),
+      runs: listPublishRuns(db),
       notice: query.notice,
       error: query.error,
     });

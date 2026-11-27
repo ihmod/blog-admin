@@ -31,4 +31,34 @@
     </a>
   </p>
 </section>
+
+<section class="card">
+  <h2>推送记录</h2>
+  <% if (!runs || runs.length === 0) { %>
+    <p class="muted">还没有发布记录。</p>
+  <% } else { %>
+    <div class="publish-runs">
+      <% for (const run of runs) { %>
+        <details class="publish-run">
+          <summary>
+            <% if (run.status === 'success') { %>
+              <span class="badge">成功</span>
+            <% } else if (run.status === 'error') { %>
+              <span class="badge trash">失败</span>
+            <% } else { %>
+              <span class="badge draft">发布中</span>
+            <% } %>
+            <span class="mono"><%= run.startedAt %></span>
+            <% if (run.commitSha) { %><code><%= run.commitSha.slice(0, 12) %></code><% } %>
+            <% if (run.status === 'success') { %>
+              <span class="muted"><%= run.posts %> 篇 / <%= run.files %> 文件<%= run.pushed ? ' · 已推送' : ' · 无新提交' %></span>
+            <% } %>
+            <% if (run.message) { %><span class="muted"><%= run.message %></span><% } %>
+          </summary>
+          <pre class="publish-log"><%= run.log %></pre>
+        </details>
+      <% } %>
+    </div>
+  <% } %>
+</section>
 <%- include('partials/footer') %>
