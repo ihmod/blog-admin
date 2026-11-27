@@ -386,7 +386,7 @@ select {
   overflow-y: hidden;
   margin: 0;
   padding: 0;
-  background: #f2f3f5;
+  background: transparent;
   border-radius: 13px 13px 0 0;
   scrollbar-width: thin;
 }
