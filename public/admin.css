@@ -679,6 +679,7 @@ select {
 .btn-danger-ghost:hover { background: #fef3f2; }
 .side-field { display: flex; flex-direction: column; gap: 0.35rem; margin-bottom: 0.9rem; }
 .side-field:last-child { margin-bottom: 0; }
+.side-field-inline { flex-direction: row; align-items: center; justify-content: space-between; gap: 0.5rem; }
 .side-field > label { margin: 0; font-size: 11.5px; font-weight: 600; color: var(--ink-soft); }
 
 .side-field input,
@@ -704,7 +705,6 @@ select {
 }
 .field-hint { margin: 0.15rem 0 0; font-size: 0.7rem; color: var(--muted); line-height: 1.4; }
 .field-hint[hidden] { display: none; }
-.switch-row { display: flex; align-items: center; gap: 0.55rem; }
 .switch {
   position: relative;
   display: inline-flex;

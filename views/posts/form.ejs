@@ -158,14 +158,12 @@
           </div>
         </div>
 
-        <div class="side-field">
+        <div class="side-field side-field-inline">
           <label for="top_img_enabled">顶部图</label>
-          <div class="switch-row">
-            <label class="switch">
-              <input type="checkbox" id="top_img_enabled" <%= post.topImg !== 'false' ? 'checked' : '' %>>
-              <span class="switch-track"></span>
-            </label>
-          </div>
+          <label class="switch">
+            <input type="checkbox" id="top_img_enabled" <%= post.topImg !== 'false' ? 'checked' : '' %>>
+            <span class="switch-track"></span>
+          </label>
           <input type="hidden" id="top_img" name="top_img" value="<%= post.topImg ?? 'false' %>">
         </div>
 
