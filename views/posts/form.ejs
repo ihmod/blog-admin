@@ -19,8 +19,11 @@
         <button type="button" class="mode-btn" data-mode="both" aria-pressed="true">并排</button>
         <button type="button" class="mode-btn" data-mode="preview" aria-pressed="false">预览</button>
       </div>
-      <button type="button" class="view-btn" id="toggle-side" aria-pressed="false">设置</button>
-      <button type="button" class="view-btn" id="toggle-focus" aria-pressed="false">专注</button>
+      <button type="button" class="view-btn icon-btn" id="toggle-side" aria-pressed="false" aria-label="收起设置栏" title="收起设置栏">
+        <svg viewBox="0 0 20 20" width="14" height="14" aria-hidden="true">
+          <path d="M7.5 4.5l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
       <button type="button" class="view-btn" id="toggle-fullscreen" aria-pressed="false">全屏</button>
     </div>
     <div class="editor-bar-actions">

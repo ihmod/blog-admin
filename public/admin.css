@@ -682,6 +682,17 @@ select {
 .view-btn:hover { background: #f2f4f7; }
 .view-btn[aria-pressed="true"] { background: #eff4ff; border-color: #b2ccff; color: #175cd3; }
 .view-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.view-btn.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.3rem 0.4rem;
+}
+.view-btn.icon-btn svg {
+  display: block;
+  transition: transform 0.15s ease;
+}
+.view-btn.icon-btn[aria-pressed="true"] svg { transform: rotate(180deg); }
 
 .editor-mode {
   display: inline-flex;
@@ -724,24 +735,6 @@ select {
   flex: 1 1 auto !important;
 }
 
-body.editor-focus { overflow: hidden; }
-body.editor-focus .nav { display: none; }
-body.editor-focus .container { max-width: none; padding: 0; }
-
-.editor-shell.is-focus {
-  position: fixed;
-  inset: 0;
-  z-index: 100;
-  margin: 0;
-  padding: 0.8rem;
-  overflow: auto;
-  background: var(--bg);
-}
-.editor-shell.is-focus .editor-grid { grid-template-columns: 1fr; }
-.editor-shell.is-focus .editor-side { display: none; }
-.editor-shell.is-focus .editor-canvas { min-height: calc(100vh - 100px); }
-.editor-shell.is-focus .editor-canvas .vditor { height: calc(100vh - 250px) !important; }
-
 .editor-shell:fullscreen {
   padding: 0.8rem;
   overflow: auto;
@@ -749,6 +742,7 @@ body.editor-focus .container { max-width: none; padding: 0; }
 }
 .editor-shell:fullscreen .editor-grid { grid-template-columns: 1fr; }
 .editor-shell:fullscreen .editor-side { display: none; }
+.editor-shell:fullscreen #toggle-side { display: none; }
 .editor-shell:fullscreen .editor-canvas .vditor { height: calc(100vh - 250px) !important; }
 
 @media (max-width: 820px) {

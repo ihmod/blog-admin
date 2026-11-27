@@ -146,30 +146,15 @@
   function setupViewControls() {
     const shell = document.getElementById('post-form');
     const sideButton = document.getElementById('toggle-side');
-    const focusButton = document.getElementById('toggle-focus');
     const fullscreenButton = document.getElementById('toggle-fullscreen');
     if (!shell) return;
 
     if (sideButton) {
       sideButton.addEventListener('click', () => {
         const collapsed = shell.classList.toggle('side-collapsed');
-        sideButton.textContent = collapsed ? '显示设置' : '设置';
         sideButton.setAttribute('aria-pressed', String(collapsed));
-      });
-    }
-
-    function setFocus(on) {
-      shell.classList.toggle('is-focus', on);
-      document.body.classList.toggle('editor-focus', on);
-      if (focusButton) {
-        focusButton.textContent = on ? '退出专注' : '专注';
-        focusButton.setAttribute('aria-pressed', String(on));
-      }
-    }
-
-    if (focusButton) {
-      focusButton.addEventListener('click', () => {
-        setFocus(!shell.classList.contains('is-focus'));
+        sideButton.setAttribute('aria-label', collapsed ? '展开设置栏' : '收起设置栏');
+        sideButton.title = collapsed ? '展开设置栏' : '收起设置栏';
       });
     }
 
@@ -192,16 +177,6 @@
       if (fullscreenButton) {
         fullscreenButton.textContent = on ? '退出全屏' : '全屏';
         fullscreenButton.setAttribute('aria-pressed', String(on));
-      }
-    });
-
-    document.addEventListener('keydown', (event) => {
-      if (
-        event.key === 'Escape' &&
-        !document.fullscreenElement &&
-        shell.classList.contains('is-focus')
-      ) {
-        setFocus(false);
       }
     });
   }
