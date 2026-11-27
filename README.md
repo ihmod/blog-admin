@@ -101,6 +101,26 @@ issues in the admin before publishing.
 - Deployment is native systemd (no Docker): see `deploy/DEPLOY.md`.
 - Emergency CLI publish: `npm run publish`.
 
+## Process launcher (pm2-style)
+
+A small launcher manages the built app in the background without Docker or pm2:
+
+```bash
+node launcher.cjs start          # build + start in the background
+node launcher.cjs status
+node launcher.cjs logs -f
+node launcher.cjs restart
+node launcher.cjs stop
+node launcher.cjs start --dev    # run tsx src/server.ts instead of dist
+```
+
+- PID: `.run/ihmod-admin.pid`
+- Log: `logs/ihmod-admin.log`
+- Env: `.env`
+- `start` rebuilds `dist/` by default; use `--no-build` to skip.
+- `start` refuses to duplicate a running instance. `stop` sends SIGTERM and falls back to SIGKILL after 10s.
+- Equivalent npm scripts: `npm run pm:start`, `pm:stop`, `pm:restart`, `pm:status`, `pm:logs`.
+
 ## Layout
 
 - `src/` TypeScript source

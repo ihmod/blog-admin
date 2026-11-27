@@ -10,7 +10,13 @@
     "start": "node dist/server.js",
     "test:watch": "vitest",
     "import": "tsx src/cli/import-posts.ts",
-    "publish": "tsx src/cli/publish.ts"
+    "publish": "tsx src/cli/publish.ts",
+    "pm": "node launcher.cjs",
+    "pm:start": "node launcher.cjs start",
+    "pm:stop": "node launcher.cjs stop",
+    "pm:restart": "node launcher.cjs restart",
+    "pm:status": "node launcher.cjs status",
+    "pm:logs": "node launcher.cjs logs"
   },
   "keywords": [],
   "author": "",
